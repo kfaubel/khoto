@@ -2,8 +2,8 @@ import axios from 'axios';
 import config from "./config.json";
 
 export default class {
-    static async loadSetting(user, key) {
-        let settingUrl = `${config.httpsProxy}http://${config.imageserver}/api/user/${user}/setting/key/${key}`;
+    static async loadSetting(host, user, key) {
+        let settingUrl = `${config.httpsProxy}http://${host}/api/user/${user}/setting/key/${key}`;
 
         let settingValue = "";
 
@@ -32,8 +32,8 @@ export default class {
     }
 
     // /api/user/:user/setting/key/:key/value/:value
-    static async saveSetting (user, key, value) {
-        let settingUrl = `${config.httpsProxy}http://${config.imageserver}/api/user/${user}/setting/key/${key}/value/${value}`;
+    static async saveSetting (host, user, key, value) {
+        let settingUrl = `${config.httpsProxy}http://${host}/api/user/${user}/setting/key/${key}/value/${value}`;
 
         // Fire and don't wait
         try {
