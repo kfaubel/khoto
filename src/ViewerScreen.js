@@ -8,7 +8,7 @@ import AlbumSelect from './AlbumSelect';
 import Slider from "./Slider";
 import ToggleButton from './ToggleButton';
 import Settings from "./Settings";
-//import config from "./config.json";
+import config from "./config.json";
 
 // First load - ComponenDidMount
 //   - Load the list of albums
@@ -36,7 +36,7 @@ class Viewer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            baseUrl: `https://cors-anywhere.herokuapp.com/http://${this.props.site}/api/user/${this.props.username}`,
+            baseUrl: `${config.httpsProxy}http://${this.props.site}/api/user/${this.props.username}`,
             password: this.props.password,
             activeUrl: "",
             albumList: ["foo"],
@@ -60,7 +60,7 @@ class Viewer extends React.Component {
         let newActiveAlbum = event.target.value;
         console.log(`New Album selected:`, newActiveAlbum);
 
-        Settings.saveSetting(this.props.username, "lastAlbum", newActiveAlbum);
+        Settings.saveSetting(this.props.site, this.props.username, "lastAlbum", newActiveAlbum);
 
         this.imageList = await this.loadImageList(newActiveAlbum);
 
@@ -85,7 +85,7 @@ class Viewer extends React.Component {
 
     showNewImage = (album, index) => {
         //console.log(`Viewer::showNewImage: user=${this.props.username} album=${album} index=${index} image=${this.imageList[index]}`)
-        Settings.saveSetting(this.props.username, "lastIndex", index);
+        Settings.saveSetting(this.props.site, this.props.username, "lastIndex", index);
         
         var imageUrl = `${this.state.baseUrl}/base64Image/albumName/${album}/imageName/${this.imageList[index]}`;
 
@@ -124,7 +124,6 @@ class Viewer extends React.Component {
         }
     }
 
-
     async componentDidMount() {
         this.timeout = setTimeout(() => {
             this.onHide();
@@ -134,14 +133,14 @@ class Viewer extends React.Component {
         try {
             let newAlbumList = await this.loadAlbumList();
 
-            let newActiveAlbum = await Settings.loadSetting(this.props.username, "lastAlbum");
+            let newActiveAlbum = await Settings.loadSetting(this.props.site, this.props.username, "lastAlbum");
             if (newActiveAlbum === "") {
                 newActiveAlbum = newAlbumList[0];
-                Settings.saveSetting(this.props.username, "lastAlbum", newActiveAlbum);
+                Settings.saveSetting(this.props.site, this.props.username, "lastAlbum", newActiveAlbum);
             }
             this.imageList = await this.loadImageList(newActiveAlbum);
 
-            let newActiveImageIndex = await Settings.loadSetting(this.props.username, "lastIndex");
+            let newActiveImageIndex = await Settings.loadSetting(this.props.site, this.props.username, "lastIndex");
             if (newActiveImageIndex === "") {
                 console.log(`Viewer::componentDidMount: newActiveImageIndex blank, setting to 0`)
                 newActiveImageIndex = 0;
