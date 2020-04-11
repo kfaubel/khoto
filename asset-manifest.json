@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/khoto/static/css/main.9ab2e04f.chunk.css",
-    "main.js": "/khoto/static/js/main.126539a6.chunk.js",
-    "main.js.map": "/khoto/static/js/main.126539a6.chunk.js.map",
+    "main.js": "/khoto/static/js/main.aa9cc52a.chunk.js",
+    "main.js.map": "/khoto/static/js/main.aa9cc52a.chunk.js.map",
     "runtime-main.js": "/khoto/static/js/runtime-main.d0b4d86d.js",
     "runtime-main.js.map": "/khoto/static/js/runtime-main.d0b4d86d.js.map",
     "static/js/2.75af542d.chunk.js": "/khoto/static/js/2.75af542d.chunk.js",
     "static/js/2.75af542d.chunk.js.map": "/khoto/static/js/2.75af542d.chunk.js.map",
     "index.html": "/khoto/index.html",
-    "precache-manifest.4c68385eaff016b08ae5e08cca60b34d.js": "/khoto/precache-manifest.4c68385eaff016b08ae5e08cca60b34d.js",
+    "precache-manifest.3b9ebc58a15a2eb6cc31c14a4fd00662.js": "/khoto/precache-manifest.3b9ebc58a15a2eb6cc31c14a4fd00662.js",
     "service-worker.js": "/khoto/service-worker.js",
     "static/css/main.9ab2e04f.chunk.css.map": "/khoto/static/css/main.9ab2e04f.chunk.css.map",
     "static/js/2.75af542d.chunk.js.LICENSE.txt": "/khoto/static/js/2.75af542d.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.d0b4d86d.js",
     "static/js/2.75af542d.chunk.js",
     "static/css/main.9ab2e04f.chunk.css",
-    "static/js/main.126539a6.chunk.js"
+    "static/js/main.aa9cc52a.chunk.js"
   ]
 }
