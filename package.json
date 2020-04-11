@@ -2,7 +2,7 @@
   "name": "khoto",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://kfaubel.github.io/",
+  "homepage": "https://kfaubel.github.io/khoto",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kfaubel/khoto.git"
