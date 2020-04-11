@@ -31,7 +31,7 @@ class Login extends React.Component {
         //console.log("Login handleSubmit");
         event.preventDefault();
         this.props.updateCredentials(this.state.site, this.state.name, this.state.password);
-        this.props.history.push('/viewer');
+        this.props.history.push(process.env.PUBLIC_URL + '/viewer'); // <Route path={process.env.PUBLIC_URL + "/viewer"} 
     }
 
     render() {

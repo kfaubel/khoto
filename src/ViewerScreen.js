@@ -50,7 +50,7 @@ class Viewer extends React.Component {
         //console.log(`Viewer::Viewer - username=${this.props.username} password=${this.state.password}`);
         if (this.props.username === "") {
             console.log(`No username.  Pushing to login`);
-            this.props.history.push("/");
+            this.props.history.push(process.env.PUBLIC_URL + "/");
         }
         this.imageList = [];
         this.fullScreen = false;
@@ -161,7 +161,7 @@ class Viewer extends React.Component {
             if (this.timeout !== undefined) {
                 clearTimeout(this.timeout);
             }
-            this.props.history.push("/");
+            this.props.history.push(process.env.PUBLIC_URL + "/");
         };
 
         document.addEventListener('keydown', this.onKey);
@@ -262,7 +262,7 @@ class Viewer extends React.Component {
             if (event.button === 0) {
                 this.onPrev();
             } else if (event.button === 1) {
-                this.props.history.push("/");
+                this.props.history.push(process.env.PUBLIC_URL + "/");
             } else if (event.button === 2) {
                 this.onNext();
             }
