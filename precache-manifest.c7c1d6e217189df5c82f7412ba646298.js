@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "a81da412cce667c8c0ec707e2282b6b1",
+    "revision": "4519595123f768a677fff3f7032d14e1",
     "url": "/khoto/index.html"
   },
   {
-    "revision": "df377b670d45111451ab",
+    "revision": "688064266b6a8ae5d473",
     "url": "/khoto/static/css/main.9ab2e04f.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/khoto/static/js/2.75af542d.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "df377b670d45111451ab",
-    "url": "/khoto/static/js/main.aa9cc52a.chunk.js"
+    "revision": "688064266b6a8ae5d473",
+    "url": "/khoto/static/js/main.71ca3ec5.chunk.js"
   },
   {
     "revision": "9228f8252be002dd9609",
