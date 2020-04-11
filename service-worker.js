@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/khoto/precache-manifest.0aff6d9d2e3a71638fa43c97c4735794.js"
+  "/khoto/precache-manifest.dfd7c04ac0ca807ee087b1a9d82d905e.js"
 );
 
 self.addEventListener('message', (event) => {
