@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d73deb63f4391602673be0a47d992fff",
+    "revision": "a81da412cce667c8c0ec707e2282b6b1",
     "url": "/khoto/index.html"
   },
   {
