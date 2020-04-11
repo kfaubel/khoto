@@ -1,0 +1,109 @@
+.Viewer {
+  text-align: center;
+  background: #111;
+}
+
+.Login {
+  background: rgb(43, 90, 243);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.float-button-prev {
+  position: fixed;
+  left: 20px;
+  bottom: 50%;
+  z-index: 9999;
+  cursor: pointer;
+  visibility: visible
+}
+
+.float-button-next {
+  position: fixed;
+  right: 20px;
+  bottom: 50%;
+  z-index: 9999;
+  cursor: pointer;
+  visibility: visible
+}
+
+.float-select {
+  position: fixed;
+  top: 10px;
+  display: block;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  cursor: pointer;
+  visibility: visible
+}
+
+.float-button-toggle {
+  position: fixed;
+  right: 20px;
+  bottom: 80px;
+  z-index: 9999;
+  cursor: pointer;
+  visibility: visible
+}
+      
+.m-fadeOut {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 500ms, opacity 1000ms;
+}
+
+.m-fadeIn {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 1000ms;
+}
+
+.slidecontainer {
+  position: fixed;
+  bottom: 10px;
+  z-index: 9999;
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px; 
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.5;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%; 
+  background: rgb(3, 30, 185);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgb(3, 30, 185);
+  cursor: pointer;
+}
