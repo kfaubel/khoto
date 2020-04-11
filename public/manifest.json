@@ -1,15 +1,8 @@
 {
-  "short_name": "imageViewer",
-  "name": "imageViewer",
+  "short_name": "khoto",
+  "name": "khoto",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
-  "icons": [
-    {
-      "src": "/khoto/favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    }
-  ]  
 }
