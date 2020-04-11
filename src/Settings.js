@@ -3,7 +3,7 @@ import config from "./config.json";
 
 export default class {
     static async loadSetting(user, key) {
-        let settingUrl = `http://${config.imageserver}/api/user/${user}/setting/key/${key}`;
+        let settingUrl = `https://cors-anywhere.herokuapp.com/http://${config.imageserver}/api/user/${user}/setting/key/${key}`;
 
         let settingValue = "";
 
@@ -33,7 +33,7 @@ export default class {
 
     // /api/user/:user/setting/key/:key/value/:value
     static async saveSetting (user, key, value) {
-        let settingUrl = `http://${config.imageserver}/api/user/${user}/setting/key/${key}/value/${value}`;
+        let settingUrl = `https://cors-anywhere.herokuapp.com/http://${config.imageserver}/api/user/${user}/setting/key/${key}/value/${value}`;
 
         // Fire and don't wait
         try {
