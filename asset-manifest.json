@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/khoto/static/css/main.9ab2e04f.chunk.css",
-    "main.js": "/khoto/static/js/main.f785a6f6.chunk.js",
-    "main.js.map": "/khoto/static/js/main.f785a6f6.chunk.js.map",
+    "main.js": "/khoto/static/js/main.0c272dbf.chunk.js",
+    "main.js.map": "/khoto/static/js/main.0c272dbf.chunk.js.map",
     "runtime-main.js": "/khoto/static/js/runtime-main.d0b4d86d.js",
     "runtime-main.js.map": "/khoto/static/js/runtime-main.d0b4d86d.js.map",
-    "static/js/2.75af542d.chunk.js": "/khoto/static/js/2.75af542d.chunk.js",
-    "static/js/2.75af542d.chunk.js.map": "/khoto/static/js/2.75af542d.chunk.js.map",
+    "static/js/2.7b168e70.chunk.js": "/khoto/static/js/2.7b168e70.chunk.js",
+    "static/js/2.7b168e70.chunk.js.map": "/khoto/static/js/2.7b168e70.chunk.js.map",
     "index.html": "/khoto/index.html",
-    "precache-manifest.9b0902af84950340699155009aaf8684.js": "/khoto/precache-manifest.9b0902af84950340699155009aaf8684.js",
+    "precache-manifest.985fdbd2ef9c0a964805ffe7e491bad6.js": "/khoto/precache-manifest.985fdbd2ef9c0a964805ffe7e491bad6.js",
     "service-worker.js": "/khoto/service-worker.js",
     "static/css/main.9ab2e04f.chunk.css.map": "/khoto/static/css/main.9ab2e04f.chunk.css.map",
-    "static/js/2.75af542d.chunk.js.LICENSE.txt": "/khoto/static/js/2.75af542d.chunk.js.LICENSE.txt"
+    "static/js/2.7b168e70.chunk.js.LICENSE.txt": "/khoto/static/js/2.7b168e70.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.d0b4d86d.js",
-    "static/js/2.75af542d.chunk.js",
+    "static/js/2.7b168e70.chunk.js",
     "static/css/main.9ab2e04f.chunk.css",
-    "static/js/main.f785a6f6.chunk.js"
+    "static/js/main.0c272dbf.chunk.js"
   ]
 }
