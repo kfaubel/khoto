@@ -1,12 +1,14 @@
 import React from 'react';
 import axios from 'axios';
+
 import './App.css';
-import Canvas from './Canvas';
-import NextButton from './NextButton';
-import PrevButton from './PrevButton';
-import AlbumSelect from './AlbumSelect';
-import Slider from "./Slider";
-import ToggleButton from './ToggleButton';
+import Canvas from './components/Canvas';
+import NextButton from './components/NextButton';
+import PrevButton from './components/PrevButton';
+import AlbumSelect from './components/AlbumSelect';
+import Slider from "./components/Slider";
+import ToggleButton from './components/ToggleButton';
+
 import Settings from "./Settings";
 import config from "./config.json";
 
@@ -39,7 +41,7 @@ class Viewer extends React.Component {
             baseUrl: `${config.httpsProxy}http://${this.props.site}/api/user/${this.props.username}`,
             password: this.props.password,
             activeUrl: "",
-            albumList: ["foo"],
+            albumList: [""],
             activeAlbum: "",
             activeImageIndex: 0,
             imageListLength: 0,

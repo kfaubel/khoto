@@ -1,4 +1,5 @@
 import React from 'react';
+import { Container, Form, Row, Col, Button } from "react-bootstrap";
 
 class Login extends React.Component {
 
@@ -28,7 +29,7 @@ class Login extends React.Component {
     }
 
     handleSubmit = (event) => {
-        //console.log("Login handleSubmit");
+        console.log("Login handleSubmit");
         event.preventDefault();
         this.props.updateCredentials(this.state.site, this.state.name, this.state.password);
         this.props.history.push(process.env.PUBLIC_URL + '/viewer'); // <Route path={process.env.PUBLIC_URL + "/viewer"} 
@@ -36,36 +37,49 @@ class Login extends React.Component {
 
     render() {
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                <div className="form-group">
-                    <label className="control-label col-sm-2" >Site:</label>
-                    <div className="col-sm-10">
-                        <input className="form-control" id="site"
-                            value={this.state.site} onChange={this.setSite} />
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="control-label col-sm-2" >Name:</label>
-                    <div className="col-sm-10">
-                        <input className="form-control" id="name"
-                            value={this.state.name} onChange={this.setName} />
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="control-label col-sm-2">Password:</label>
-                    <div className="col-sm-10">
-                        <input type="password" className="form-control" id="pwd"
-                            value={this.state.password} onChange={this.setPassword} />
-                    </div>
-                </div>
-                <div className="form-group">
-                    <div className="col-sm-offset-2 col-sm-10">
-                        <button type="submit" className="btn btn-primary">Submit</button>
-                    </div>
-                </div>
-            </form>
+            <div>
+                <Container>
+                    <Row className="justify-content-md-center">
+                        <Col xs lg="4"/>
+                        <Col md="auto"><h1>Khoto</h1></Col>
+                        <Col xs lg="4"/>
+                    </Row>
+                </Container>
+                <Form onSubmit={this.handleSubmit}>
+                    <Form.Group as={Row} controlId="siteForm" >
+                        <Form.Label column sm={{ span: 2, offset: 1 }}>
+                            Site:
+                    </Form.Label>
+                        <Col sm={5}>
+                            <Form.Control type="text" placeholder="host.com:12345" value={this.state.site} onChange={this.setSite} />
+                        </Col>
+                    </Form.Group>
 
+                    <Form.Group as={Row} controlId="userForm">
+                        <Form.Label column sm={{ span: 2, offset: 1 }}>
+                            User:
+                    </Form.Label>
+                        <Col sm={5}>
+                            <Form.Control type="text" value={this.state.user} onChange={this.setName} />
+                        </Col>
+                    </Form.Group>
 
+                    <Form.Group as={Row} controlId="passwordForm">
+                        <Form.Label column sm={{ span: 2, offset: 1 }}>
+                            Password:
+                    </Form.Label>
+                        <Col sm={5}>
+                            <Form.Control type="password" value={this.state.password} onChange={this.setPassword} />
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row}>
+                        <Col sm={{ span: 3, offset: 3 }}>
+                            <Button type="submit">Submit</Button>
+                        </Col>
+                    </Form.Group>
+                </Form>
+            </div>
         );
     }
 }
