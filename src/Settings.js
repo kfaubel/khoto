@@ -4,6 +4,7 @@ import config from "./config.json";
 export default class {
     static async loadSetting(host, user, key) {
         let settingUrl = `${config.httpsProxy}http://${host}/api/user/${user}/setting/key/${key}`;
+        console.log(`loadSetting: ${settingUrl}`);
 
         let settingValue = "";
 
@@ -34,7 +35,7 @@ export default class {
     // /api/user/:user/setting/key/:key/value/:value
     static async saveSetting (host, user, key, value) {
         let settingUrl = `${config.httpsProxy}http://${host}/api/user/${user}/setting/key/${key}/value/${value}`;
-
+        console.log(`saveSetting: ${settingUrl}`);
         // Fire and don't wait
         try {
             axios({
