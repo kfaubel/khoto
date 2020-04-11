@@ -36,7 +36,7 @@ class Viewer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            baseUrl: `http://${this.props.site}/api/user/${this.props.username}`,
+            baseUrl: `https://cors-anywhere.herokuapp.com/http://${this.props.site}/api/user/${this.props.username}`,
             password: this.props.password,
             activeUrl: "",
             albumList: ["foo"],
