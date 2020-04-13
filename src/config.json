@@ -1,4 +1,5 @@
 {
-    "imageserverx": "localhost:7000",
-    "httpsProxy": "https://cors-anywhere.herokuapp.com/"
+    "imageserverx": "localhost:7777",
+    "httpsProxy": "",
+    "httpsProxyX": "https://cors-anywhere.herokuapp.com/"
 }

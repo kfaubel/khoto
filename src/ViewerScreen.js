@@ -49,7 +49,7 @@ class Viewer extends React.Component {
             imagePassword: this.props.password
         };
 
-        //console.log(`Viewer::Viewer - username=${this.props.username} password=${this.state.password}`);
+        console.log(`Viewer::Viewer - username=${this.props.username} password=${this.state.password}`);
         if (this.props.username === "") {
             console.log(`No username.  Pushing to login`);
             this.props.history.push(process.env.PUBLIC_URL + "/");
@@ -65,12 +65,6 @@ class Viewer extends React.Component {
         Settings.saveSetting(this.props.site, this.props.username, "lastAlbum", newActiveAlbum);
 
         this.imageList = await this.loadImageList(newActiveAlbum);
-
-        // this.setState({
-        //     activeAlbum: newActiveAlbum,
-        //     imageListLength: this.imageList.length,
-        //     activeImageIndex: 0
-        // });
 
         this.showNewImage(newActiveAlbum, 0);
     };
@@ -384,7 +378,7 @@ class Viewer extends React.Component {
     //            onMouseMove={this.onShow}
     //            tabIndex="0"
     render() {
-
+        console.log("Viewer::render");
         return (
             <div id="myViewer" className="Viewer">
                 <AlbumSelect

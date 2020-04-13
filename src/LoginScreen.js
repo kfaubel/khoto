@@ -6,9 +6,9 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            site: "",
-            name: "",
-            password: ""
+            site: "localhost:7777",
+            name: "ken",
+            password: "8888"
         };
     }
 
@@ -40,34 +40,34 @@ class Login extends React.Component {
             <div>
                 <Container>
                     <Row className="justify-content-md-center">
-                        <Col xs lg="4"/>
+                        <Col xs lg="4" />
                         <Col md="auto"><h1>Khoto</h1></Col>
-                        <Col xs lg="4"/>
+                        <Col xs lg="4" />
                     </Row>
                 </Container>
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Group as={Row} controlId="siteForm" >
                         <Form.Label column sm={{ span: 2, offset: 1 }}>
                             Site:
-                    </Form.Label>
+                        </Form.Label>
                         <Col sm={5}>
                             <Form.Control type="text" placeholder="host.com:12345" value={this.state.site} onChange={this.setSite} />
                         </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} controlId="userForm">
+                    <Form.Group as={Row} controlId="nameForm">
                         <Form.Label column sm={{ span: 2, offset: 1 }}>
-                            User:
-                    </Form.Label>
+                            Name:
+                        </Form.Label>
                         <Col sm={5}>
-                            <Form.Control type="text" value={this.state.user} onChange={this.setName} />
+                            <Form.Control type="text" value={this.state.name} onChange={this.setName} />
                         </Col>
                     </Form.Group>
 
                     <Form.Group as={Row} controlId="passwordForm">
                         <Form.Label column sm={{ span: 2, offset: 1 }}>
                             Password:
-                    </Form.Label>
+                        </Form.Label>
                         <Col sm={5}>
                             <Form.Control type="password" value={this.state.password} onChange={this.setPassword} />
                         </Col>
@@ -77,6 +77,12 @@ class Login extends React.Component {
                         <Col sm={{ span: 3, offset: 3 }}>
                             <Button type="submit">Submit</Button>
                         </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row}>
+                        <Form.Label column sm={{ span: 2, offset: 1 }}>
+                            {this.props.message}
+                        </Form.Label>
                     </Form.Group>
                 </Form>
             </div>
