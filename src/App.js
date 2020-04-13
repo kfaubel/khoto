@@ -7,6 +7,8 @@ import {
 import LoginScreen from "./LoginScreen"
 import ViewerScreen from "./ViewerScreen"
 
+import config from "./config.json";
+
 // class Viewer extends React.Component {
 class App extends React.Component {
 
@@ -15,7 +17,8 @@ class App extends React.Component {
         this.state = {
             site: "",
             username: "",
-            password: ""
+            password: "",
+            publicUrlPrefix: config.publicUrlPrefix
         };
     }
 
@@ -32,13 +35,13 @@ class App extends React.Component {
     // - aka redirecting the user to another route.
     // The {...props} below pushs all the props down to the subordinate screens including 'history' OR NOT
     render() {
-        console.log(`App::render - PUBLIC_URL=${process.env.PUBLIC_URL}`)
+        console.log(`App::render - PUBLIC_URL=${this.state.publicUrlPrefix}`)
         return(
             <Router>
                 <div>
                     {/* A <Switch> looks through its children <Route>s and renders the first one that matches the current URL. */}
                     <Switch>
-                        <Route path={process.env.PUBLIC_URL + "/viewer"} 
+                        <Route path={this.state.publicUrlPrefix + "/viewer"} 
                             render={(props) =>
                                 <ViewerScreen {...props}
                                 site={this.state.site}
@@ -47,10 +50,11 @@ class App extends React.Component {
                                 component={ViewerScreen} />
                             }
                         />
-                        <Route path={process.env.PUBLIC_URL + '/'}
+                        <Route path={this.state.publicUrlPrefix + "/"}
                         
                             render={(props) => 
                                 <LoginScreen {...props} 
+                                publicUrlPrefix={this.state.publicUrlPrefix}
                                 updateCredentials={this.updateCredentials} />
                             }                         
                         />
