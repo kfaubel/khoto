@@ -10,6 +10,7 @@ class Login extends React.Component {
             name: "ken",
             password: "8888"
         };
+        console.log(`Login: message=${this.props.loginMessage}`)
     }
 
     setSite = (event) => {
@@ -32,7 +33,7 @@ class Login extends React.Component {
         console.log("Login handleSubmit");
         event.preventDefault();
         this.props.updateCredentials(this.state.site, this.state.name, this.state.password);
-        this.props.history.push(this.props.publicUrlPrefix + '/viewer'); // <Route path={process.env.PUBLIC_URL + "/viewer"} 
+        //this.props.history.push(this.props.publicUrlPrefix + '/viewer'); // <Route path={process.env.PUBLIC_URL + "/viewer"} 
     }
 
     render() {
@@ -71,6 +72,12 @@ class Login extends React.Component {
                         <Col sm={5}>
                             <Form.Control type="password" value={this.state.password} onChange={this.setPassword} />
                         </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} controlId="MessageFormLabel">
+                        <Form.Label column sm={{ span: 5, offset: 3 }}>
+                            {this.props.loginMessage}
+                        </Form.Label>
                     </Form.Group>
 
                     <Form.Group as={Row}>

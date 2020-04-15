@@ -5,7 +5,7 @@ class ToggleButton extends React.Component {
         return (
             <button
                 id="toggleButton"
-                className="btn btn-primary float-button-toggle"
+                className="float-button-toggle"
                 onClick={this.props.handleOnToggle}>
                 [ - ]
             </button>

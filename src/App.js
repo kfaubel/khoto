@@ -1,9 +1,12 @@
 import React from "react";
 import {
-    BrowserRouter as Router,
+    //BrowserRouter as Router,
     Switch,
+    //Redirect,
+    withRouter,
     Route
 } from "react-router-dom";
+
 import LoginScreen from "./LoginScreen"
 import ViewerScreen from "./ViewerScreen"
 
@@ -18,13 +21,22 @@ class App extends React.Component {
             site: "",
             username: "",
             password: "",
-            publicUrlPrefix: config.publicUrlPrefix
+            publicUrlPrefix: config.publicUrlPrefix,
+            toViewer: false,
+            toLogin: false,
+            loginMessage: "Login"
         };
     }
 
     updateCredentials = (site, username, password) => {
         console.log(`App::updateCredentials: site = ${site}, username = ${username}, password = ${password}`);
-        this.setState({site: site, username: username, password: password});
+        this.setState({site: site, username: username, password: password, toViewer: true});
+        this.props.history.push(this.state.publicUrlPrefix + '/viewer');
+    }
+
+    exitViewer = (message) => {
+        this.setState({loginMessage: message, toLogin: true});
+        this.props.history.push(this.state.publicUrlPrefix + '/');
     }
 
     // The real workhorse of React Router is the History library. Under the hood, it’s what’s keeping track 
@@ -36,8 +48,15 @@ class App extends React.Component {
     // The {...props} below pushs all the props down to the subordinate screens including 'history' OR NOT
     render() {
         console.log(`App::render - PUBLIC_URL=${this.state.publicUrlPrefix}`)
+        
+        // Total fail.  This seems like the most straight forward way to do this
+        // if (this.state.toViewer) {
+        //     console.log("App:render - Redirect to viewer")
+        //     return <Redirect to="/viewer" />
+        // }
+
         return(
-            <Router>
+            //<Router>
                 <div>
                     {/* A <Switch> looks through its children <Route>s and renders the first one that matches the current URL. */}
                     <Switch>
@@ -47,6 +66,7 @@ class App extends React.Component {
                                 site={this.state.site}
                                 username={this.state.username} 
                                 password={this.state.password} 
+                                exitViewer={this.exitViewer}
                                 component={ViewerScreen} />
                             }
                         />
@@ -55,14 +75,16 @@ class App extends React.Component {
                             render={(props) => 
                                 <LoginScreen {...props} 
                                 publicUrlPrefix={this.state.publicUrlPrefix}
+                                loginMessage={this.state.loginMessage}
                                 updateCredentials={this.updateCredentials} />
                             }                         
                         />
                     </Switch>
                 </div>
-            </Router>
+            //</Router>
         )
     }
 }
 
-export default App;
+// The "withRouter" here makes it so that history is added to our props for the push redirect call
+export default withRouter(App);

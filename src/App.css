@@ -7,23 +7,16 @@
   background: rgb(43, 90, 243);
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    visibility: visible;
-    opacity: 1;
-  }
-}
-
 .float-button-prev {
   position: fixed;
   left: 20px;
   bottom: 50%;
   z-index: 9999;
   cursor: pointer;
-  visibility: visible
+  visibility: visible;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff
 }
 
 .float-button-next {
@@ -32,18 +25,22 @@
   bottom: 50%;
   z-index: 9999;
   cursor: pointer;
-  visibility: visible
+  visibility: visible;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff
 }
 
 .float-select {
   position: fixed;
   top: 10px;
-  display: block;
   left: 50%;
-  transform: translateX(-50%);
   z-index: 9999;
   cursor: pointer;
-  visibility: visible
+  visibility: visible;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff
 }
 
 .float-button-toggle {
@@ -52,13 +49,28 @@
   bottom: 80px;
   z-index: 9999;
   cursor: pointer;
-  visibility: visible
+  visibility: visible;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff
+}
+      
+.k-fadeOut {
+  visibility: hidden;
+  opacity: 0;
+  transition: 1.5s ease-out
+}
+
+.k-fadeIn {
+  visibility: visible;
+  opacity: 1;
+  transition: .5s ease-in
 }
       
 .m-fadeOut {
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0s linear 500ms, opacity 1000ms;
+  transition: visibility 0s linear 1500ms, opacity 1000ms;
 }
 
 .m-fadeIn {

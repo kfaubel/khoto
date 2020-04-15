@@ -5,7 +5,7 @@ class PrevButton extends React.Component {
       return (
         <button
             id="prevButton" 
-            className="btn btn-primary  btn-lg float-button-prev"
+            className="float-button-prev"
             onClick={this.props.handleOnPrev}>
             &lt;
         </button>

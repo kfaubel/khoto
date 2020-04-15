@@ -52,10 +52,12 @@ class Viewer extends React.Component {
         console.log(`Viewer::Viewer - username=${this.props.username} password=${this.state.password}`);
         if (this.props.username === "") {
             console.log(`No username.  Pushing to login`);
-            this.props.history.push(process.env.PUBLIC_URL + "/");
+            this.props.exitViewer("No username");
+            //this.props.history.push(process.env.PUBLIC_URL + "/");
         }
         this.imageList = [];
         this.fullScreen = false;
+        this.timeout = null;
     }
 
     handleAlbumChange = async (event) => {
@@ -153,10 +155,12 @@ class Viewer extends React.Component {
         } catch (error) {
             // handle error
             console.log(`Viewer::componentDidMount Catch = ${error}.  Pushing to login`);
-            if (this.timeout !== undefined) {
+            if (this.timeout != null) {
                 clearTimeout(this.timeout);
+                this.timeout = null;
             }
-            this.props.history.push(process.env.PUBLIC_URL + "/");
+            //this.props.history.push(process.env.PUBLIC_URL + "/");
+            this.props.exitViewer("Get album or image list failed");
         };
 
         document.addEventListener('keydown', this.onKey);
@@ -176,6 +180,7 @@ class Viewer extends React.Component {
         document.removeEventListener('resize', this.handleResize);
     }
 
+    // Synchronous retreival of the album list
     loadAlbumList = async () => {
         let albumListUrl = this.state.baseUrl + "/albums";
         //console.log("Viewer loadAlbumList albumUrl: " + albumListUrl);
@@ -191,6 +196,7 @@ class Viewer extends React.Component {
         return albumResult.data;
     }
 
+    // Syncrhonous retrevial of the image list
     loadImageList = async (albumName) => {
         var albumUrl = this.state.baseUrl + "/album/albumName/" + albumName;
         //console.log("Viewer loadImageList albumUrl: " + albumUrl);
@@ -211,6 +217,7 @@ class Viewer extends React.Component {
         return list;
     }
 
+    // Called when a user actions (click, key or wheel) say to go to the next image
     onNext = () => {
         console.log("App: onNext, index: " + this.state.activeImageIndex);
 
@@ -223,17 +230,22 @@ class Viewer extends React.Component {
         }
     }
 
+    // Called when a user actions (click, key or wheel) say to go to the previous image
     onPrev = () => {
         console.log("App: onPrev, index: " + this.state.activeImageIndex);
 
         if (this.state.activeImageIndex > 0) {
-            let newActiveImageIndex = this.state.activeImageIndex - 1;
+            let newActiveImageIndex = this.state.activeImageIndex;
             newActiveImageIndex--; 
 
             this.showNewImage(this.state.activeAlbum, newActiveImageIndex);
         }
     }
 
+    // Handle an event from the keyboard.  
+    // Right arrow and space advance
+    // Left arrow rewinds
+    // ESC exits full screen.
     onKey = (event) => {
         var x = event.which || event.keyCode;
 
@@ -250,6 +262,8 @@ class Viewer extends React.Component {
         }
     }
 
+    // This is the handler for the mouse buttons.  In full screen it can be used to 
+    // advance, rewind or logout  
     onClick = (event) => {
         console.log("onClick.");
         if (this.isInFullScreen()) {
@@ -257,20 +271,23 @@ class Viewer extends React.Component {
             if (event.button === 0) {
                 this.onPrev();
             } else if (event.button === 1) {
-                this.props.history.push(process.env.PUBLIC_URL + "/");
+                //this.props.history.push(process.env.PUBLIC_URL + "/");
+                this.props.exitViewer("Logout");
             } else if (event.button === 2) {
                 this.onNext();
             }
         } else {
-            console.log("Skipping mouse click when not in full screen")
+            // console.log("Skipping mouse click when not in full screen")
         }
     }
 
+    // We don't need the context menu
     onRightClick = (event) => {
         // Disable the regular context menu
         event.preventDefault(); 
     }
 
+    // Handle whell events to advance or rewind the image flow
     onWheel = (event) => {
         console.log("Viewer::onWheel: ", event);
 
@@ -286,26 +303,27 @@ class Viewer extends React.Component {
     onShow = () => {
         try {
             if (!this.isInFullScreen()) {
-                document.getElementById("prevButton").classList.remove("m-fadeOut");
-                document.getElementById("nextButton").classList.remove("m-fadeOut");
-                document.getElementById("albumSelect").classList.remove("m-fadeOut");
-                document.getElementById("imageSlider").classList.remove("m-fadeOut");
-                document.getElementById("toggleButton").classList.remove("m-fadeOut");
-                document.getElementById("prevButton").classList.add("m-fadeIn");
-                document.getElementById("nextButton").classList.add("m-fadeIn");
-                document.getElementById("albumSelect").classList.add("m-fadeIn");
-                document.getElementById("imageSlider").classList.add("m-fadeIn");
-                document.getElementById("toggleButton").classList.add("m-fadeIn");
+                document.getElementById("prevButton").classList.remove("k-fadeOut");
+                document.getElementById("nextButton").classList.remove("k-fadeOut");
+                document.getElementById("albumSelect").classList.remove("k-fadeOut");
+                document.getElementById("imageSlider").classList.remove("k-fadeOut");
+                document.getElementById("toggleButton").classList.remove("k-fadeOut");
+                document.getElementById("prevButton").classList.add("k-fadeIn");
+                document.getElementById("nextButton").classList.add("k-fadeIn");
+                document.getElementById("albumSelect").classList.add("k-fadeIn");
+                document.getElementById("imageSlider").classList.add("k-fadeIn");
+                document.getElementById("toggleButton").classList.add("k-fadeIn");
             } else {
                 // just the slider
-                document.getElementById("imageSlider").classList.remove("m-fadeOut");
-                document.getElementById("imageSlider").classList.add("m-fadeIn");
+                document.getElementById("imageSlider").classList.remove("k-fadeOut");
+                document.getElementById("imageSlider").classList.add("k-fadeIn");
             }
 
             // Here we use a class variable (this.timeout) because we don't want to trigger 
             // a re-render that would happen if we changed a state variable.
-            if (this.timeout !== undefined) {
+            if (this.timeout != null) {
                 clearTimeout(this.timeout);
+                this.timeout = null;
             }
 
             this.timeout = setTimeout(() => {
@@ -316,16 +334,16 @@ class Viewer extends React.Component {
 
     onHide = () => {
         try {
-            document.getElementById("prevButton").classList.remove("m-fadeIn");
-            document.getElementById("nextButton").classList.remove("m-fadeIn");
-            document.getElementById("albumSelect").classList.remove("m-fadeIn");
-            document.getElementById("imageSlider").classList.remove("m-fadeIn");
-            document.getElementById("toggleButton").classList.remove("m-fadeIn");
-            document.getElementById("prevButton").classList.add("m-fadeOut");
-            document.getElementById("nextButton").classList.add("m-fadeOut");
-            document.getElementById("albumSelect").classList.add("m-fadeOut");
-            document.getElementById("imageSlider").classList.add("m-fadeOut");
-            document.getElementById("toggleButton").classList.add("m-fadeOut");
+            document.getElementById("prevButton").classList.remove("k-fadeIn");
+            document.getElementById("nextButton").classList.remove("k-fadeIn");
+            document.getElementById("albumSelect").classList.remove("k-fadeIn");
+            document.getElementById("imageSlider").classList.remove("k-fadeIn");
+            document.getElementById("toggleButton").classList.remove("k-fadeIn");
+            document.getElementById("prevButton").classList.add("k-fadeOut");
+            document.getElementById("nextButton").classList.add("k-fadeOut");
+            document.getElementById("albumSelect").classList.add("k-fadeOut");
+            document.getElementById("imageSlider").classList.add("k-fadeOut");
+            document.getElementById("toggleButton").classList.add("k-fadeOut");
         } catch (e) { }
     }
 
