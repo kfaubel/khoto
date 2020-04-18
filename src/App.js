@@ -1,8 +1,6 @@
 import React from "react";
 import {
-    //BrowserRouter as Router,
     Switch,
-    //Redirect,
     withRouter,
     Route
 } from "react-router-dom";
@@ -30,12 +28,13 @@ class App extends React.Component {
 
     updateCredentials = (site, username, password) => {
         console.log(`App::updateCredentials: site = ${site}, username = ${username}, password = ${password}`);
-        this.setState({site: site, username: username, password: password, toViewer: true});
+        this.setState({ site: site, username: username, password: password, toViewer: true });
         this.props.history.push(this.state.publicUrlPrefix + '/viewer');
     }
 
     exitViewer = (message) => {
-        this.setState({loginMessage: message, toLogin: true});
+        console.log(`App::exitViewer: message=${message}`);
+        this.setState({ loginMessage: message, toLogin: true });
         this.props.history.push(this.state.publicUrlPrefix + '/');
     }
 
@@ -47,41 +46,38 @@ class App extends React.Component {
     // - aka redirecting the user to another route.
     // The {...props} below pushs all the props down to the subordinate screens including 'history' OR NOT
     render() {
-        console.log(`App::render - PUBLIC_URL=${this.state.publicUrlPrefix}`)
-        
+        // console.log(`App::render - PUBLIC_URL=${this.state.publicUrlPrefix}`)
+
         // Total fail.  This seems like the most straight forward way to do this
         // if (this.state.toViewer) {
         //     console.log("App:render - Redirect to viewer")
         //     return <Redirect to="/viewer" />
         // }
 
-        return(
-            //<Router>
-                <div>
-                    {/* A <Switch> looks through its children <Route>s and renders the first one that matches the current URL. */}
-                    <Switch>
-                        <Route path={this.state.publicUrlPrefix + "/viewer"} 
-                            render={(props) =>
-                                <ViewerScreen {...props}
+        return (
+            <div>
+                {/* A <Switch> looks through its children <Route>s and renders the first one that matches the current URL. */}
+                <Switch>
+                    <Route path={this.state.publicUrlPrefix + "/viewer"}
+                        render={(props) =>
+                            <ViewerScreen {...props}
                                 site={this.state.site}
-                                username={this.state.username} 
-                                password={this.state.password} 
+                                username={this.state.username}
+                                password={this.state.password}
                                 exitViewer={this.exitViewer}
                                 component={ViewerScreen} />
-                            }
-                        />
-                        <Route path={this.state.publicUrlPrefix + "/"}
-                        
-                            render={(props) => 
-                                <LoginScreen {...props} 
+                        }
+                    />
+                    <Route path={this.state.publicUrlPrefix + "/"}
+                        render={(props) =>
+                            <LoginScreen {...props}
                                 publicUrlPrefix={this.state.publicUrlPrefix}
                                 loginMessage={this.state.loginMessage}
                                 updateCredentials={this.updateCredentials} />
-                            }                         
-                        />
-                    </Switch>
-                </div>
-            //</Router>
+                        }
+                    />
+                </Switch>
+            </div>
         )
     }
 }

@@ -52,6 +52,7 @@ class Viewer extends React.Component {
         console.log(`Viewer::Viewer - username=${this.props.username} password=${this.state.password}`);
         if (this.props.username === "") {
             console.log(`No username.  Pushing to login`);
+            this.setState({activeUrl: null});
             this.props.exitViewer("No username");
             //this.props.history.push(process.env.PUBLIC_URL + "/");
         }
@@ -110,6 +111,8 @@ class Viewer extends React.Component {
             newImagePassword = "";
         }
 
+        console.log(`Viewer::showNewImage [${index}] ${imageUrl}`)
+        // This causes a re-render and our canvas gets the activeUrl
         this.setState({ 
             activeUrl: imageUrl, 
             imageType: newType, 
@@ -144,6 +147,8 @@ class Viewer extends React.Component {
                 newActiveImageIndex = 0;
             }
 
+            this.bookmarkIndex = newActiveImageIndex;
+
             this.showNewImage(newActiveAlbum, newActiveImageIndex);
 
             let newState = {
@@ -160,6 +165,8 @@ class Viewer extends React.Component {
                 this.timeout = null;
             }
             //this.props.history.push(process.env.PUBLIC_URL + "/");
+            
+            this.setState({activeUrl: null});
             this.props.exitViewer("Get album or image list failed");
         };
 
@@ -178,6 +185,11 @@ class Viewer extends React.Component {
         document.removeEventListener('mousedown', this.onClick);
         document.removeEventListener('contextmenu', this.onRightClick);
         document.removeEventListener('resize', this.handleResize);
+
+        if (this.timeout != null) {
+            clearTimeout(this.timeout);
+            this.timeout = null;
+        }
     }
 
     // Synchronous retreival of the album list
@@ -253,25 +265,32 @@ class Viewer extends React.Component {
         // Up:    38       Down:  40
         // Right: 39       Left:  37
 
-        if (x === 32 || x === 39) {
+        if (x === 32 || x === 39) { // Right arrow or space
             this.onNext();
-        } else if (x === 37) {
+        } else if (x === 37) {      // Back Arrow
             this.onPrev();
-        } else if (x === 27) {
+        } else if (x === 27) {      // ESC
             this.closeFullscreen();
+        } else if (x === 81) {      // 'q'
+            this.setState({activeUrl: null});
+            this.props.exitViewer("Logout");
+        } else if (x === 66) {      // 'b'
+            this.bookmarkIndex = this.state.activeImageIndex;
+        } else if (x === 71) {      // 'g'
+        this.showNewImage(this.state.activeAlbum, this.bookmarkIndex);
         }
     }
 
     // This is the handler for the mouse buttons.  In full screen it can be used to 
     // advance, rewind or logout  
     onClick = (event) => {
-        console.log("onClick.");
         if (this.isInFullScreen()) {
-            console.log("Viewer::onClick", event.button);
+            //console.log("Viewer::onClick", event.button);
             if (event.button === 0) {
                 this.onPrev();
             } else if (event.button === 1) {
                 //this.props.history.push(process.env.PUBLIC_URL + "/");
+                this.setState({activeUrl: null});
                 this.props.exitViewer("Logout");
             } else if (event.button === 2) {
                 this.onNext();
@@ -289,7 +308,7 @@ class Viewer extends React.Component {
 
     // Handle whell events to advance or rewind the image flow
     onWheel = (event) => {
-        console.log("Viewer::onWheel: ", event);
+        //console.log("Viewer::onWheel: ", event);
 
         if (event.deltaY < 0) {
             this.onPrev();
@@ -396,7 +415,7 @@ class Viewer extends React.Component {
     //            onMouseMove={this.onShow}
     //            tabIndex="0"
     render() {
-        console.log("Viewer::render");
+        // console.log("Viewer::render");
         return (
             <div id="myViewer" className="Viewer">
                 <AlbumSelect

@@ -16,13 +16,15 @@ class MyCanvas extends React.Component {
     }
 
     componentDidUpdate = (prevProps) => {
-        // if (prevProps. !== this.props.text) {
-        //console.log("Canvas - componentDidUpdate: " + this.props.url);
-        // }
-        if (this.props.url !== "") {
+        if (prevProps.url === this.props.url) {
+            console.log("Canvas::componentDidUpdate: url did not change");
+            return;
+        }
+        
+        if (this.props.url !== null && this.props.url !== "") {
             this.setImage(this.props.url);
         } else {
-            //console.log(`Canvas - Blank URL, skipping.`);
+            console.log(`Canvas - Blank URL, skipping. but grey`);
             let canvas = document.getElementById("myCanvas");
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -34,7 +36,15 @@ class MyCanvas extends React.Component {
     }
 
     componentDidMount() {
-        this.setImage();
+        console.log(`Canvas - componentDidMount: ${this.props.url}`);
+        
+        if (this.props.url !== null && this.props.url !== "") {
+            this.setImage(this.props.url);
+        } 
+    }
+
+    componentWillUnmount() {
+        console.log(`Canvas - componentWillUnmount: ${this.props.url}`);
     }
 
     setImage = async () => {

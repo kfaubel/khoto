@@ -6,7 +6,7 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            site: "localhost:7777",
+            site: "localhost:7004",
             name: "ken",
             password: "8888"
         };
