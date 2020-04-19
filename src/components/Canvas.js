@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import './Canvas.css';
 
 const crypto = require('crypto');
 const options = { algorithm: 'aes256' };
@@ -13,25 +12,39 @@ class MyCanvas extends React.Component {
     // eslint-disable-next-line no-useless-constructor
     constructor(props) {
         super(props); // url = full url to image 
+        this.image = null;
     }
 
     componentDidUpdate = (prevProps) => {
-        if (this.props.url !== null && this.props.url !== "") {
-            this.setImage(this.props.url);
-        } else {
-            console.log(`Canvas - Blank URL, skipping. but grey`);
+        //console.log("New URL: " + this.props.url);
+        //console.log("Pre URL: " + prevProps.url);
+        if (this.props.url === null && this.props.url === "") {
+            console.log(`Canvas::componnentDidUpdate - blank or null url`);
             let canvas = document.getElementById("myCanvas");
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
             let ctx = canvas.getContext("2d");
             ctx.fillStyle = "grey";
-            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillRect(0,0,canvas.width,canvas.height);            
+        } else if (this.props.url === prevProps.url) {
+            
+            // All we need to do is re-render since the size probably changed
+            if (this.image === null) {
+                //console.log("Redraw existing image... but null, so skipping");
+            } else {
+                console.log("Canvas::componnentDidUpdate - Redraw existing image");
+                this.showImage(this.image);
+            }
+        } else {
+            // Do a full retreive and render
+            console.log(`Canvas::componentDidUpdatem- Full fetch and render`);
+            this.setImage(this.props.url);
         }
     }
 
     componentDidMount() {
-        console.log(`Canvas - componentDidMount: ${this.props.url}`);
+        console.log(`Canvas::componentDidMount: ${this.props.url}`);
         
         if (this.props.url !== null && this.props.url !== "") {
             this.setImage(this.props.url);
@@ -39,7 +52,7 @@ class MyCanvas extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log(`Canvas - componentWillUnmount: ${this.props.url}`);
+        // console.log(`Canvas - componentWillUnmount: ${this.props.url}`);
     }
 
     setImage = async () => {
@@ -78,11 +91,13 @@ class MyCanvas extends React.Component {
             let image = new Image();
             
             image.onload = () => {
+                this.image = image;
                 this.showImage(image);
             } 
 
             image.onerror = () => {
                 //console.log(`Canvas - onerror()`);
+                this.image = null;
                 let canvas = document.getElementById("myCanvas");
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;

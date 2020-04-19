@@ -1,16 +1,14 @@
 import React from 'react';
 
-class PrevButton extends React.Component {  
-    render() {
-      return (
+function PrevButton(props) {
+    return (
         <button
-            id="prevButton" 
+            id="prevButton"
             className="float-button-prev"
-            onClick={this.props.handleOnPrev}>
+            onClick={props.handleOnPrev}>
             &lt;
         </button>
-      );
-    }
-  }
-  
+    );
+}
+
 export default PrevButton;

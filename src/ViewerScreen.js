@@ -49,16 +49,81 @@ class Viewer extends React.Component {
             imagePassword: this.props.password
         };
 
-        console.log(`Viewer::Viewer - username=${this.props.username} password=${this.state.password}`);
+        //console.log(`Viewer::Viewer - username=${this.props.username} password=${this.state.password}`);
         if (this.props.username === "") {
-            console.log(`No username.  Pushing to login`);
+            console.warn(`No username.  Pushing to login`);
             this.setState({activeUrl: null});
             this.props.exitViewer("No username");
-            //this.props.history.push(process.env.PUBLIC_URL + "/");
         }
         this.imageList = [];
-        this.fullScreen = false;
         this.timeout = null;
+    }
+
+    async componentDidMount() {
+        this.timeout = setTimeout(() => {
+            this.hideControls();
+        }, 3000);
+
+        // Load the list of albums
+        try {
+            let newAlbumList = await this.loadAlbumList();
+
+            let newActiveAlbum = await Settings.loadSetting(this.props.site, this.props.username, "lastAlbum");
+            if (newActiveAlbum === "") {
+                newActiveAlbum = newAlbumList[0];
+                Settings.saveSetting(this.props.site, this.props.username, "lastAlbum", newActiveAlbum);
+            }
+            this.imageList = await this.loadImageList(newActiveAlbum);
+
+            let newActiveImageIndex = await Settings.loadSetting(this.props.site, this.props.username, "lastIndex");
+            if (newActiveImageIndex === "") {
+                console.log(`Viewer::componentDidMount: newActiveImageIndex blank, setting to 0`)
+                newActiveImageIndex = 0;
+            }
+
+            this.bookmarkIndex = newActiveImageIndex;
+
+            // console.log(`Viewer::componentDidMount album=${newActiveAlbum} Index= ${newActiveImageIndex} - assigning new Image Url`);
+            this.assignNewImageUrl(newActiveAlbum, newActiveImageIndex);
+
+            let newState = {
+                albumList: newAlbumList,
+            };
+
+            this.setState(newState);
+
+        } catch (error) {
+            // handle error
+            console.error(`Viewer::componentDidMount Catch = ${error}.  Pushing to login`);
+            if (this.timeout !== null) {
+                clearTimeout(this.timeout);
+                this.timeout = null;
+            }
+            
+            this.setState({activeUrl: null});
+            this.props.exitViewer("No access");
+        };
+
+        document.addEventListener('keydown', this.handleKey);
+        document.addEventListener('wheel', this.handleWheel);
+        document.addEventListener('mousemove', this.showControls);
+        document.addEventListener('mousedown', this.handleClick);
+        document.addEventListener('contextmenu', this.handleRightClick);
+        window.addEventListener('resize', this.handleResize)
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKey);
+        document.removeEventListener('wheel', this.handleWheel);
+        document.removeEventListener('mousemove', this.showControls);
+        document.removeEventListener('mousedown', this.handleClick);
+        document.removeEventListener('contextmenu', this.handleRightClick);
+        window.removeEventListener('resize', this.handleResize);
+
+        if (this.timeout !== null) {
+            clearTimeout(this.timeout);
+            this.timeout = null;
+        }
     }
 
     handleAlbumChange = async (event) => {
@@ -69,21 +134,24 @@ class Viewer extends React.Component {
 
         this.imageList = await this.loadImageList(newActiveAlbum);
 
-        this.showNewImage(newActiveAlbum, 0);
+        console.log(`Viewer::handleAlbumChange album=${newActiveAlbum} Index= 0 - assigning new Image Url`);
+        this.assignNewImageUrl(newActiveAlbum, 0);
     };
 
     handleSliderChange = (event) => {
-        //console.log(`Viewer::handlSliderChange - New: ${event.target.value}, Max: ${this.state.imageListLength}`);
-        this.showNewImage(this.state.activeAlbum, event.target.value);
+        console.log(`Viewer::handlSliderChange - New: ${event.target.value}, Max: ${this.state.imageListLength}`);
+        this.assignNewImageUrl(this.state.activeAlbum, event.target.value);
     }
 
+    // Redisplay the current image.  This will recompute the coordinates and rescale
     handleResize = () => {
         //console.log("Viewer::handleResize");
-        this.showNewImage(this.state.activeAlbum, this.state.activeImageIndex);
+        this.assignNewImageUrl(this.state.activeAlbum, this.state.activeImageIndex);
     }
 
-    showNewImage = (album, index) => {
-        //console.log(`Viewer::showNewImage: user=${this.props.username} album=${album} index=${index} image=${this.imageList[index]}`)
+    // Computes the image URL for the canvas to use and update all of the related state.
+    assignNewImageUrl = (album, index) => {
+        //console.log(`Viewer::assignNewImageUrl: user=${this.props.username} album=${album} index=${index} image=${this.imageList[index]}`)
         Settings.saveSetting(this.props.site, this.props.username, "lastIndex", index);
         
         var imageUrl = `${this.state.baseUrl}/base64Image/albumName/${album}/imageName/${this.imageList[index]}`;
@@ -111,7 +179,7 @@ class Viewer extends React.Component {
             newImagePassword = "";
         }
 
-        console.log(`Viewer::showNewImage [${index}] ${imageUrl}`)
+        //console.log(`Viewer::assignNewImageUrl [${index}] ${imageUrl}`)
         // This causes a re-render and our canvas gets the activeUrl
         this.setState({ 
             activeUrl: imageUrl, 
@@ -121,74 +189,7 @@ class Viewer extends React.Component {
             activeImageIndex: index,
             imagePassword: newImagePassword });
         } catch (e) {
-            console.log(`ShowNewImage failed, skipping ${e}`);
-        }
-    }
-
-    async componentDidMount() {
-        this.timeout = setTimeout(() => {
-            this.onHide();
-        }, 3000);
-
-        // Load the list of albums
-        try {
-            let newAlbumList = await this.loadAlbumList();
-
-            let newActiveAlbum = await Settings.loadSetting(this.props.site, this.props.username, "lastAlbum");
-            if (newActiveAlbum === "") {
-                newActiveAlbum = newAlbumList[0];
-                Settings.saveSetting(this.props.site, this.props.username, "lastAlbum", newActiveAlbum);
-            }
-            this.imageList = await this.loadImageList(newActiveAlbum);
-
-            let newActiveImageIndex = await Settings.loadSetting(this.props.site, this.props.username, "lastIndex");
-            if (newActiveImageIndex === "") {
-                console.log(`Viewer::componentDidMount: newActiveImageIndex blank, setting to 0`)
-                newActiveImageIndex = 0;
-            }
-
-            this.bookmarkIndex = newActiveImageIndex;
-
-            this.showNewImage(newActiveAlbum, newActiveImageIndex);
-
-            let newState = {
-                albumList: newAlbumList,
-            };
-
-            this.setState(newState);
-
-        } catch (error) {
-            // handle error
-            console.log(`Viewer::componentDidMount Catch = ${error}.  Pushing to login`);
-            if (this.timeout != null) {
-                clearTimeout(this.timeout);
-                this.timeout = null;
-            }
-            //this.props.history.push(process.env.PUBLIC_URL + "/");
-            
-            this.setState({activeUrl: null});
-            this.props.exitViewer("Get album or image list failed");
-        };
-
-        document.addEventListener('keydown', this.onKey);
-        document.addEventListener('wheel', this.onWheel);
-        document.addEventListener('mousemove', this.onShow);
-        document.addEventListener('mousedown', this.onClick);
-        document.addEventListener('contextmenu', this.onRightClick);
-        window.addEventListener('resize', this.handleResize)
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('keydown', this.onKey);
-        document.removeEventListener('wheel', this.onWheel);
-        document.removeEventListener('mousemove', this.onShow);
-        document.removeEventListener('mousedown', this.onClick);
-        document.removeEventListener('contextmenu', this.onRightClick);
-        document.removeEventListener('resize', this.handleResize);
-
-        if (this.timeout != null) {
-            clearTimeout(this.timeout);
-            this.timeout = null;
+            console.error(`Viewer::assignNewImageUrl failed, skipping ${e}`);
         }
     }
 
@@ -223,34 +224,34 @@ class Viewer extends React.Component {
             });
             list = listResult.data;
         } catch (error) {
-            console.log(`Viewer::loadImageList failed: ${error}`)
+            //console.log(`Viewer::loadImageList failed: ${error}`)
         }
 
         return list;
     }
 
     // Called when a user actions (click, key or wheel) say to go to the next image
-    onNext = () => {
-        console.log("App: onNext, index: " + this.state.activeImageIndex);
+    handleNext = () => {
+        //console.log("App: onNext, index: " + this.state.activeImageIndex);
 
         if (this.state.activeImageIndex < this.state.imageListLength - 1) {
             let newActiveImageIndex = this.state.activeImageIndex;
             // Adding 1 to activeImageIndex on the line above sometimes produced "01"
             newActiveImageIndex++;
 
-            this.showNewImage(this.state.activeAlbum, newActiveImageIndex);
+            this.assignNewImageUrl(this.state.activeAlbum, newActiveImageIndex);
         }
     }
 
     // Called when a user actions (click, key or wheel) say to go to the previous image
-    onPrev = () => {
-        console.log("App: onPrev, index: " + this.state.activeImageIndex);
+    handlePrev = () => {
+        //console.log("App: onPrev, index: " + this.state.activeImageIndex);
 
         if (this.state.activeImageIndex > 0) {
             let newActiveImageIndex = this.state.activeImageIndex;
             newActiveImageIndex--; 
 
-            this.showNewImage(this.state.activeAlbum, newActiveImageIndex);
+            this.assignNewImageUrl(this.state.activeAlbum, newActiveImageIndex);
         }
     }
 
@@ -258,7 +259,7 @@ class Viewer extends React.Component {
     // Right arrow and space advance
     // Left arrow rewinds
     // ESC exits full screen.
-    onKey = (event) => {
+    handleKey = (event) => {
         var x = event.which || event.keyCode;
 
         // space: 32       Enter: 13     Esc:   27
@@ -266,9 +267,9 @@ class Viewer extends React.Component {
         // Right: 39       Left:  37
 
         if (x === 32 || x === 39) { // Right arrow or space
-            this.onNext();
+            this.handleNext();
         } else if (x === 37) {      // Back Arrow
-            this.onPrev();
+            this.handlePrev();
         } else if (x === 27) {      // ESC
             this.closeFullscreen();
         } else if (x === 81) {      // 'q'
@@ -277,23 +278,23 @@ class Viewer extends React.Component {
         } else if (x === 66) {      // 'b'
             this.bookmarkIndex = this.state.activeImageIndex;
         } else if (x === 71) {      // 'g'
-        this.showNewImage(this.state.activeAlbum, this.bookmarkIndex);
+        this.assignNewImageUrl(this.state.activeAlbum, this.bookmarkIndex);
         }
     }
 
     // This is the handler for the mouse buttons.  In full screen it can be used to 
     // advance, rewind or logout  
-    onClick = (event) => {
+    handleClick = (event) => {
         if (this.isInFullScreen()) {
             //console.log("Viewer::onClick", event.button);
             if (event.button === 0) {
-                this.onPrev();
+                this.handlePrev();
             } else if (event.button === 1) {
                 //this.props.history.push(process.env.PUBLIC_URL + "/");
                 this.setState({activeUrl: null});
                 this.props.exitViewer("Logout");
             } else if (event.button === 2) {
-                this.onNext();
+                this.handleNext();
             }
         } else {
             // console.log("Skipping mouse click when not in full screen")
@@ -301,25 +302,25 @@ class Viewer extends React.Component {
     }
 
     // We don't need the context menu
-    onRightClick = (event) => {
+    handleRightClick = (event) => {
         // Disable the regular context menu
         event.preventDefault(); 
     }
 
     // Handle whell events to advance or rewind the image flow
-    onWheel = (event) => {
+    handleWheel = (event) => {
         //console.log("Viewer::onWheel: ", event);
 
         if (event.deltaY < 0) {
-            this.onPrev();
+            this.handlePrev();
         } else if (event.deltaY > 0) {
-            this.onNext();
+            this.handleNext();
         } else {
-            console.log("Viewer::onWheel - not an up/down");
+            console.warn("Viewer::onWheel - not an up/down");
         }
     }
 
-    onShow = () => {
+    showControls = () => {
         try {
             if (!this.isInFullScreen()) {
                 document.getElementById("prevButton").classList.remove("k-fadeOut");
@@ -340,18 +341,18 @@ class Viewer extends React.Component {
 
             // Here we use a class variable (this.timeout) because we don't want to trigger 
             // a re-render that would happen if we changed a state variable.
-            if (this.timeout != null) {
+            if (this.timeout !== null) {
                 clearTimeout(this.timeout);
                 this.timeout = null;
             }
 
             this.timeout = setTimeout(() => {
-                this.onHide();
+                this.hideControls();
             }, 2000);
         } catch (e) { }
     }
 
-    onHide = () => {
+    hideControls = () => {
         try {
             document.getElementById("prevButton").classList.remove("k-fadeIn");
             document.getElementById("nextButton").classList.remove("k-fadeIn");
@@ -426,9 +427,9 @@ class Viewer extends React.Component {
 
                 <Canvas url={this.state.activeUrl} password={this.state.imagePassword} type={this.state.imageType} />
 
-                <NextButton handleOnNext={this.onNext} />
+                <NextButton handleOnNext={this.handleNext} />
 
-                <PrevButton handleOnPrev={this.onPrev} />
+                <PrevButton handleOnPrev={this.handlePrev} />
 
                 <Slider max={this.state.imageListLength - 1} current={this.state.activeImageIndex} handleChange={this.handleSliderChange} />
 

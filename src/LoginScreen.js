@@ -10,35 +10,38 @@ class Login extends React.Component {
             name: "ken",
             password: "8888"
         };
-        console.log(`Login: message=${this.props.loginMessage}`)
+        //console.log(`Login: message=${this.props.loginMessage}`)
     }
 
-    setSite = (event) => {
-        this.setState({ site: event.target.value });
-    }
-
-    setName = (event) => {
-        this.setState({ name: event.target.value });
-    }
-
-    setPassword = (event) => {
-        this.setState({ password: event.target.value });
+    setValue = (event) => {
+        switch (event.target.id) {
+            case "siteForm":
+                this.setState({ site: event.target.value });
+                break;
+            case "nameForm":
+                this.setState({ name: event.target.value });
+                break;
+            case "passwordForm":
+                this.setState({ password: event.target.value });
+                break;
+            default:
+                console.warn(`Login::setValue unexpected id: ${event.target.id}`);
+                break;
+        }
     }
 
     validateForm = () => {
-        return this.state.email.length > 0 && this.state.password.length > 0;
+        return this.state.name.length > 0 && this.state.password.length > 0;
     }
 
     handleSubmit = (event) => {
-        console.log("Login handleSubmit");
         event.preventDefault();
         this.props.updateCredentials(this.state.site, this.state.name, this.state.password);
-        //this.props.history.push(this.props.publicUrlPrefix + '/viewer'); // <Route path={process.env.PUBLIC_URL + "/viewer"} 
     }
 
     render() {
         return (
-            <div>
+            <div className="Login">
                 <Container>
                     <Row className="justify-content-md-center">
                         <Col xs lg="4" />
@@ -52,7 +55,7 @@ class Login extends React.Component {
                             Site:
                         </Form.Label>
                         <Col sm={5}>
-                            <Form.Control type="text" placeholder="host.com:12345" value={this.state.site} onChange={this.setSite} />
+                            <Form.Control type="text" placeholder="host.com:12345" value={this.state.site} onChange={this.setValue} />
                         </Col>
                     </Form.Group>
 
@@ -61,7 +64,7 @@ class Login extends React.Component {
                             Name:
                         </Form.Label>
                         <Col sm={5}>
-                            <Form.Control type="text" value={this.state.name} onChange={this.setName} />
+                            <Form.Control type="text" value={this.state.name} onChange={this.setValue} />
                         </Col>
                     </Form.Group>
 
@@ -70,7 +73,7 @@ class Login extends React.Component {
                             Password:
                         </Form.Label>
                         <Col sm={5}>
-                            <Form.Control type="password" value={this.state.password} onChange={this.setPassword} />
+                            <Form.Control type="password" value={this.state.password} onChange={this.setValue} />
                         </Col>
                     </Form.Group>
 
@@ -82,7 +85,7 @@ class Login extends React.Component {
 
                     <Form.Group as={Row}>
                         <Col sm={{ span: 3, offset: 3 }}>
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit" disabled={!this.validateForm()} >Submit</Button>
                         </Col>
                     </Form.Group>
 

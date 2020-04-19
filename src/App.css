@@ -4,7 +4,13 @@
 }
 
 .Login {
-  background: rgb(43, 90, 243);
+  background-color: rgb(189, 201, 241);
+}
+
+#myCanvas { 
+    height: 100vh; 
+    width: 100vw; 
+    display: block;
 }
 
 .float-button-prev {
@@ -68,18 +74,6 @@
   opacity: 1;
   transition: .5s ease-in
 }
-      
-.m-fadeOut {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0s linear 1500ms, opacity 1000ms;
-}
-
-.m-fadeIn {
-  visibility: visible;
-  opacity: 1;
-  transition: visibility 0s linear 0s, opacity 1000ms;
-}
 
 .slidecontainer {
   position: fixed;
@@ -91,16 +85,17 @@
 .slider {
   -webkit-appearance: none;
   width: 100%;
-  height: 4px;
+  height: 7px;
   border-radius: 2px; 
-  background: #d3d3d3;
+  background: #f1f1f3;
   outline: none;
-  opacity: 0.5;
+  opacity: 0.6;
   -webkit-transition: .2s;
   transition: opacity .2s;
 }
 
 .slider:hover {
+  background: #ffffff;
   opacity: 1;
 }
 
@@ -108,16 +103,16 @@
   -webkit-appearance: none;
   appearance: none;
   width: 10px;
-  height: 10px;
+  height: 15px;
   border-radius: 50%; 
-  background: rgb(3, 30, 185);
+  background: #007bff;
   cursor: pointer;
 }
 
 .slider::-moz-range-thumb {
   width: 10px;
-  height: 10px;
+  height: 15px;
   border-radius: 50%;
-  background: rgb(3, 30, 185);
+  background: #007bff;
   cursor: pointer;
 }

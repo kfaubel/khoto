@@ -2,21 +2,20 @@ import axios from 'axios';
 import config from "./config.json";
 
 export default class {
+    // /api/user/:user/setting/key/:key
     static async loadSetting(host, user, key) {
         let settingUrl = `${config.httpsProxy}http://${host}/api/user/${user}/setting/key/${key}`;
-        console.log(`loadSetting: ${settingUrl}`);
+        //console.log(`loadSetting: ${settingUrl}`);
 
         let settingValue = "";
 
         try {
-            // Load the list of albums
             let settingResult = await axios({
                 method: 'get',
                 url: settingUrl,
                 responseType: 'text',
                 headers: { 'Access-Control-Allow-Origin': '*' }
             })
-            //console.log(settingResult);
             settingValue = settingResult.data;
         } catch (error) {
             console.log(`loadSetting caught for ${key}`)
@@ -28,7 +27,7 @@ export default class {
             settingValue = "";
         }
 
-        console.log(`Settings: loadSetting result for ${key}: ${settingValue}`);
+        console.log(`Settings::loadSetting result for ${key}: ${settingValue}`);
         return settingValue;
     }
 
@@ -36,6 +35,7 @@ export default class {
     static async saveSetting (host, user, key, value) {
         let settingUrl = `${config.httpsProxy}http://${host}/api/user/${user}/setting/key/${key}/value/${value}`;
         //console.log(`saveSetting: ${settingUrl}`);
+        
         // Fire and don't wait
         try {
             axios({
