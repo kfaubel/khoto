@@ -6,11 +6,10 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            site: "localhost:7004",
-            name: "ken",
-            password: "8888"
+            site:     this.props.site,
+            name:     this.props.name,
+            password: this.props.password
         };
-        //console.log(`Login: message=${this.props.loginMessage}`)
     }
 
     setValue = (event) => {
@@ -31,7 +30,7 @@ class Login extends React.Component {
     }
 
     validateForm = () => {
-        return this.state.name.length > 0 && this.state.password.length > 0;
+        return true; //this.state.name.length > 0 && this.state.password.length > 0;
     }
 
     handleSubmit = (event) => {
@@ -43,9 +42,9 @@ class Login extends React.Component {
         return (
             <div className="Login">
                 <Container>
-                    <Row className="justify-content-md-center">
-                        <Col xs lg="4" />
-                        <Col md="auto"><h1>Khoto</h1></Col>
+                    <Row>
+                        <Col sm="4" />
+                        <Col sm="auto"><h1>Khoto</h1></Col>
                         <Col xs lg="4" />
                     </Row>
                 </Container>

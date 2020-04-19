@@ -16,13 +16,13 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            site: "",
-            username: "",
-            password: "",
+            site:     config.defaultSite,
+            name:     config.defaultName,
+            password: config.defaultPassword,
             publicUrlPrefix: config.publicUrlPrefix,
             toViewer: false,
             toLogin: false,
-            loginMessage: "Login"
+            loginMessage: "Let's get started"
         };
     }
 

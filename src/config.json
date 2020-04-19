@@ -1,6 +1,8 @@
 {
-    "imageserverx": "localhost:7777",
+    "defaultSite": "",
+    "defaultName": "",
+    "defaultPassword": "",
     "httpsProxy": "",
-    "httpsProxyX": "https://cors-anywhere.herokuapp.com/",
+    "httpProxyXX": "https://cors-anywhere.herokuapp.com/",
     "publicUrlPrefix": ""
 }
