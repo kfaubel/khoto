@@ -16,11 +16,6 @@ class MyCanvas extends React.Component {
     }
 
     componentDidUpdate = (prevProps) => {
-        if (prevProps.url === this.props.url) {
-            console.log("Canvas::componentDidUpdate: url did not change");
-            return;
-        }
-        
         if (this.props.url !== null && this.props.url !== "") {
             this.setImage(this.props.url);
         } else {
