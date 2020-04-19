@@ -30,7 +30,7 @@ class Login extends React.Component {
     }
 
     validateForm = () => {
-        return true; //this.state.name.length > 0 && this.state.password.length > 0;
+        return this.state.name.length > 0 && this.state.password.length > 0;
     }
 
     handleSubmit = (event) => {

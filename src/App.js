@@ -26,9 +26,9 @@ class App extends React.Component {
         };
     }
 
-    updateCredentials = (site, username, password) => {
-        console.log(`App::updateCredentials: site = ${site}, username = ${username}, password = ${password}`);
-        this.setState({ site: site, username: username, password: password, toViewer: true });
+    updateCredentials = (site, name, password) => {
+        console.log(`App::updateCredentials: site = ${site}, name = ${name}, password = ${password}`);
+        this.setState({ site: site, name: name, password: password, toViewer: true });
         this.props.history.push(this.state.publicUrlPrefix + '/viewer');
     }
 
@@ -62,7 +62,7 @@ class App extends React.Component {
                         render={(props) =>
                             <ViewerScreen {...props}
                                 site={this.state.site}
-                                username={this.state.username}
+                                name={this.state.name}
                                 password={this.state.password}
                                 exitViewer={this.exitViewer}
                                 component={ViewerScreen} />
@@ -71,6 +71,9 @@ class App extends React.Component {
                     <Route path={this.state.publicUrlPrefix + "/"}
                         render={(props) =>
                             <LoginScreen {...props}
+                                site={this.state.site}
+                                name={this.state.name}
+                                password={this.state.password}
                                 publicUrlPrefix={this.state.publicUrlPrefix}
                                 loginMessage={this.state.loginMessage}
                                 updateCredentials={this.updateCredentials} />

@@ -38,7 +38,7 @@ class Viewer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            baseUrl: `${config.httpsProxy}http://${this.props.site}/api/user/${this.props.username}`,
+            baseUrl: `${config.httpsProxy}http://${this.props.site}/api/user/${this.props.name}`,
             password: this.props.password,
             activeUrl: "",
             albumList: [""],
@@ -49,11 +49,11 @@ class Viewer extends React.Component {
             imagePassword: this.props.password
         };
 
-        //console.log(`Viewer::Viewer - username=${this.props.username} password=${this.state.password}`);
-        if (this.props.username === "") {
-            console.warn(`No username.  Pushing to login`);
+        //console.log(`Viewer::Viewer - name=${this.props.name} password=${this.state.password}`);
+        if (this.props.name === "") {
+            console.warn(`No name.  Pushing to login`);
             this.setState({activeUrl: null});
-            this.props.exitViewer("No username");
+            this.props.exitViewer("No name");
         }
         this.imageList = [];
         this.timeout = null;
@@ -68,14 +68,14 @@ class Viewer extends React.Component {
         try {
             let newAlbumList = await this.loadAlbumList();
 
-            let newActiveAlbum = await Settings.loadSetting(this.props.site, this.props.username, "lastAlbum");
+            let newActiveAlbum = await Settings.loadSetting(this.props.site, this.props.name, "lastAlbum");
             if (newActiveAlbum === "") {
                 newActiveAlbum = newAlbumList[0];
-                Settings.saveSetting(this.props.site, this.props.username, "lastAlbum", newActiveAlbum);
+                Settings.saveSetting(this.props.site, this.props.name, "lastAlbum", newActiveAlbum);
             }
             this.imageList = await this.loadImageList(newActiveAlbum);
 
-            let newActiveImageIndex = await Settings.loadSetting(this.props.site, this.props.username, "lastIndex");
+            let newActiveImageIndex = await Settings.loadSetting(this.props.site, this.props.name, "lastIndex");
             if (newActiveImageIndex === "") {
                 console.log(`Viewer::componentDidMount: newActiveImageIndex blank, setting to 0`)
                 newActiveImageIndex = 0;
@@ -130,7 +130,7 @@ class Viewer extends React.Component {
         let newActiveAlbum = event.target.value;
         console.log(`New Album selected:`, newActiveAlbum);
 
-        Settings.saveSetting(this.props.site, this.props.username, "lastAlbum", newActiveAlbum);
+        Settings.saveSetting(this.props.site, this.props.name, "lastAlbum", newActiveAlbum);
 
         this.imageList = await this.loadImageList(newActiveAlbum);
 
@@ -151,8 +151,8 @@ class Viewer extends React.Component {
 
     // Computes the image URL for the canvas to use and update all of the related state.
     assignNewImageUrl = (album, index) => {
-        //console.log(`Viewer::assignNewImageUrl: user=${this.props.username} album=${album} index=${index} image=${this.imageList[index]}`)
-        Settings.saveSetting(this.props.site, this.props.username, "lastIndex", index);
+        //console.log(`Viewer::assignNewImageUrl: user=${this.props.name} album=${album} index=${index} image=${this.imageList[index]}`)
+        Settings.saveSetting(this.props.site, this.props.name, "lastIndex", index);
         
         var imageUrl = `${this.state.baseUrl}/base64Image/albumName/${album}/imageName/${this.imageList[index]}`;
 
