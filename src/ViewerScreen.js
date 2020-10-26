@@ -52,11 +52,14 @@ class Viewer extends React.Component {
         //console.log(`Viewer::Viewer - name=${this.props.name} password=${this.state.password}`);
         if (this.props.name === "") {
             console.warn(`No name.  Pushing to login`);
-            this.setState({activeUrl: null});
+            this.setState({ activeUrl: null });
             this.props.exitViewer("No name");
         }
         this.imageList = [];
         this.timeout = null;
+
+        this.touchStartX = null;
+        this.touchStartY = null;
     }
 
     async componentDidMount() {
@@ -99,8 +102,8 @@ class Viewer extends React.Component {
                 clearTimeout(this.timeout);
                 this.timeout = null;
             }
-            
-            this.setState({activeUrl: null});
+
+            this.setState({ activeUrl: null });
             this.props.exitViewer("No access");
         };
 
@@ -109,7 +112,10 @@ class Viewer extends React.Component {
         document.addEventListener('mousemove', this.showControls);
         document.addEventListener('mousedown', this.handleClick);
         document.addEventListener('contextmenu', this.handleRightClick);
-        window.addEventListener('resize', this.handleResize)
+        document.addEventListener('touchstart', this.handleTouchStart);
+        document.addEventListener('touchmove', this.handleTouchMove);
+
+        window.addEventListener('resize', this.handleResize);
     }
 
     componentWillUnmount() {
@@ -118,6 +124,9 @@ class Viewer extends React.Component {
         document.removeEventListener('mousemove', this.showControls);
         document.removeEventListener('mousedown', this.handleClick);
         document.removeEventListener('contextmenu', this.handleRightClick);
+        document.removeEventListener('touchstart', this.handleTouchStart);
+        document.removeEventListener('touchend', this.handleTouchEnd);
+
         window.removeEventListener('resize', this.handleResize);
 
         if (this.timeout !== null) {
@@ -153,41 +162,42 @@ class Viewer extends React.Component {
     assignNewImageUrl = (album, index) => {
         //console.log(`Viewer::assignNewImageUrl: user=${this.props.name} album=${album} index=${index} image=${this.imageList[index]}`)
         Settings.saveSetting(this.props.site, this.props.name, "lastIndex", index);
-        
+
         var imageUrl = `${this.state.baseUrl}/base64Image/albumName/${album}/imageName/${this.imageList[index]}`;
 
         let newType = "";
         let newImagePassword = this.state.password;
         try {
-        if (this.imageList[index].endsWith("daj")) {
-            newType = "jpeg";
-        } else if (this.imageList[index].endsWith("dag")) {
-            newType = "gif";
-        } else if (this.imageList[index].endsWith("dap")) {
-            newType = "png";
-        } else if (this.imageList[index].endsWith("jpeg")) {
-            newType = "jpeg";
-            newImagePassword = "";
-        } else if (this.imageList[index].endsWith("jpg")) {
-            newType = "jpeg";
-            newImagePassword = "";
-        } else if (this.imageList[index].endsWith("png")) {
-            newType = "png";
-            newImagePassword = "";
-        } else if (this.imageList[index].endsWith("gif")) {
-            newType = "gif";
-            newImagePassword = "";
-        }
+            if (this.imageList[index].endsWith("daj")) {
+                newType = "jpeg";
+            } else if (this.imageList[index].endsWith("dag")) {
+                newType = "gif";
+            } else if (this.imageList[index].endsWith("dap")) {
+                newType = "png";
+            } else if (this.imageList[index].endsWith("jpeg")) {
+                newType = "jpeg";
+                newImagePassword = "";
+            } else if (this.imageList[index].endsWith("jpg")) {
+                newType = "jpeg";
+                newImagePassword = "";
+            } else if (this.imageList[index].endsWith("png")) {
+                newType = "png";
+                newImagePassword = "";
+            } else if (this.imageList[index].endsWith("gif")) {
+                newType = "gif";
+                newImagePassword = "";
+            }
 
-        //console.log(`Viewer::assignNewImageUrl [${index}] ${imageUrl}`)
-        // This causes a re-render and our canvas gets the activeUrl
-        this.setState({ 
-            activeUrl: imageUrl, 
-            imageType: newType, 
-            activeAlbum: album,
-            imageListLength: this.imageList.length,
-            activeImageIndex: index,
-            imagePassword: newImagePassword });
+            //console.log(`Viewer::assignNewImageUrl [${index}] ${imageUrl}`)
+            // This causes a re-render and our canvas gets the activeUrl
+            this.setState({
+                activeUrl: imageUrl,
+                imageType: newType,
+                activeAlbum: album,
+                imageListLength: this.imageList.length,
+                activeImageIndex: index,
+                imagePassword: newImagePassword
+            });
         } catch (e) {
             console.error(`Viewer::assignNewImageUrl failed, skipping ${e}`);
         }
@@ -249,7 +259,7 @@ class Viewer extends React.Component {
 
         if (this.state.activeImageIndex > 0) {
             let newActiveImageIndex = this.state.activeImageIndex;
-            newActiveImageIndex--; 
+            newActiveImageIndex--;
 
             this.assignNewImageUrl(this.state.activeAlbum, newActiveImageIndex);
         }
@@ -273,12 +283,12 @@ class Viewer extends React.Component {
         } else if (x === 27) {      // ESC
             this.closeFullscreen();
         } else if (x === 81) {      // 'q'
-            this.setState({activeUrl: null});
+            this.setState({ activeUrl: null });
             this.props.exitViewer("Logout");
         } else if (x === 66) {      // 'b'
             this.bookmarkIndex = this.state.activeImageIndex;
         } else if (x === 71) {      // 'g'
-        this.assignNewImageUrl(this.state.activeAlbum, this.bookmarkIndex);
+            this.assignNewImageUrl(this.state.activeAlbum, this.bookmarkIndex);
         }
     }
 
@@ -291,7 +301,7 @@ class Viewer extends React.Component {
                 this.handlePrev();
             } else if (event.button === 1) {
                 //this.props.history.push(process.env.PUBLIC_URL + "/");
-                this.setState({activeUrl: null});
+                this.setState({ activeUrl: null });
                 this.props.exitViewer("Logout");
             } else if (event.button === 2) {
                 this.handleNext();
@@ -304,7 +314,7 @@ class Viewer extends React.Component {
     // We don't need the context menu
     handleRightClick = (event) => {
         // Disable the regular context menu
-        event.preventDefault(); 
+        event.preventDefault();
     }
 
     // Handle whell events to advance or rewind the image flow
@@ -318,6 +328,63 @@ class Viewer extends React.Component {
         } else {
             console.warn("Viewer::onWheel - not an up/down");
         }
+    }
+
+    handleTouchStart = (event) => {
+        event.preventDefault();
+        this.touchStartX = event.touches[0].clientX;
+        this.touchStartY = event.touches[0].clientY;
+
+        console.log(`TouchStart - X=${this.touchStartX} Y=${this.touchStartY}`);
+
+    }
+
+    handleTouchMove = (event) => {
+        console.log("handleTouchEnd: " + JSON.stringify(event, undefined, 2))
+        event.preventDefault();
+        var last = event.touches.length - 1;
+        var currentX = event.touches[0].clientX;
+        var currentY = event.touches[0].clientY;
+
+        console.log(`TouchEnd - X=${currentX} Y=${currentY}`);
+
+        if (this.touchStartX === null) {
+            console.log("No initial X");
+            return;
+        }
+
+        if (this.touchStartY === null) {
+            console.log("No initial Y");
+            return;
+        }
+
+        var diffX = this.touchStartX - currentX;
+        var diffY = this.touchStartY - currentY;
+
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            // sliding horizontally
+            if (diffX > 0) {
+                // swiped left
+                console.log("swiped left");
+                this.handlePrev();
+            } else {
+                // swiped right
+                console.log("swiped right");
+                this.handleNext();
+            }
+        } else {
+            // sliding vertically
+            if (diffY > 0) {
+                // swiped up
+                console.log("swiped up");
+            } else {
+                // swiped down
+                console.log("swiped down");
+            }
+        }
+    
+        this.touchStartX = null;
+        this.touchStartY = null;
     }
 
     showControls = () => {
