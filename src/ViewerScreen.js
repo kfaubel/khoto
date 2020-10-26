@@ -342,7 +342,7 @@ class Viewer extends React.Component {
     handleTouchMove = (event) => {
         console.log("handleTouchEnd: " + JSON.stringify(event, undefined, 2))
         event.preventDefault();
-        var last = event.touches.length - 1;
+        
         var currentX = event.touches[0].clientX;
         var currentY = event.touches[0].clientY;
 
