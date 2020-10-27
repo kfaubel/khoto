@@ -377,6 +377,7 @@ class Viewer extends React.Component {
             if (diffY > 0) {
                 // swiped up
                 console.log("swiped up");
+                this.props.exitViewer("Logout");
             } else {
                 // swiped down
                 console.log("swiped down");
