@@ -342,7 +342,7 @@ class Viewer extends React.Component {
     handleTouchMove = (event) => {
         console.log("handleTouchEnd: " + JSON.stringify(event, undefined, 2))
         event.preventDefault();
-        
+
         var currentX = event.touches[0].clientX;
         var currentY = event.touches[0].clientY;
 
@@ -366,11 +366,11 @@ class Viewer extends React.Component {
             if (diffX > 0) {
                 // swiped left
                 console.log("swiped left");
-                this.handlePrev();
+                this.handleNext();
             } else {
                 // swiped right
                 console.log("swiped right");
-                this.handleNext();
+                this.handlePrev();
             }
         } else {
             // sliding vertically
