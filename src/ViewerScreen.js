@@ -9,7 +9,7 @@ import AlbumSelect from './components/AlbumSelect';
 import Slider from "./components/Slider";
 import ToggleButton from './components/ToggleButton';
 
-import Settings from "./Settings";
+import {loadSetting, saveSetting} from "./Settings";
 import config from "./config.json";
 
 // First load - ComponenDidMount
@@ -71,14 +71,14 @@ class Viewer extends React.Component {
         try {
             let newAlbumList = await this.loadAlbumList();
 
-            let newActiveAlbum = await Settings.loadSetting(this.props.site, this.props.name, "lastAlbum");
+            let newActiveAlbum = await loadSetting(this.props.site, this.props.name, "lastAlbum");
             if (newActiveAlbum === "") {
                 newActiveAlbum = newAlbumList[0];
-                Settings.saveSetting(this.props.site, this.props.name, "lastAlbum", newActiveAlbum);
+                saveSetting(this.props.site, this.props.name, "lastAlbum", newActiveAlbum);
             }
             this.imageList = await this.loadImageList(newActiveAlbum);
 
-            let newActiveImageIndex = await Settings.loadSetting(this.props.site, this.props.name, "lastIndex");
+            let newActiveImageIndex = await loadSetting(this.props.site, this.props.name, "lastIndex");
             if (newActiveImageIndex === "") {
                 console.log(`Viewer::componentDidMount: newActiveImageIndex blank, setting to 0`)
                 newActiveImageIndex = 0;
@@ -139,7 +139,7 @@ class Viewer extends React.Component {
         let newActiveAlbum = event.target.value;
         console.log(`New Album selected:`, newActiveAlbum);
 
-        Settings.saveSetting(this.props.site, this.props.name, "lastAlbum", newActiveAlbum);
+        saveSetting(this.props.site, this.props.name, "lastAlbum", newActiveAlbum);
 
         this.imageList = await this.loadImageList(newActiveAlbum);
 
@@ -161,7 +161,7 @@ class Viewer extends React.Component {
     // Computes the image URL for the canvas to use and update all of the related state.
     assignNewImageUrl = (album, index) => {
         //console.log(`Viewer::assignNewImageUrl: user=${this.props.name} album=${album} index=${index} image=${this.imageList[index]}`)
-        Settings.saveSetting(this.props.site, this.props.name, "lastIndex", index);
+        saveSetting(this.props.site, this.props.name, "lastIndex", index);
 
         var imageUrl = `${this.state.baseUrl}/base64Image/albumName/${album}/imageName/${this.imageList[index]}`;
 

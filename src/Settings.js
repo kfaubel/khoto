@@ -1,9 +1,8 @@
 import axios from 'axios';
 import config from "./config.json";
 
-export default class {
     // /api/user/:user/setting/key/:key
-    static async loadSetting(host, user, key) {
+    export async function loadSetting(host, user, key) {
         let settingUrl = `${config.httpsProxy}http://${host}/api/user/${user}/setting/key/${key}`;
         //console.log(`loadSetting: ${settingUrl}`);
 
@@ -32,7 +31,7 @@ export default class {
     }
 
     // /api/user/:user/setting/key/:key/value/:value
-    static async saveSetting (host, user, key, value) {
+    export async function saveSetting(host, user, key, value) {
         let settingUrl = `${config.httpsProxy}http://${host}/api/user/${user}/setting/key/${key}/value/${value}`;
         //console.log(`saveSetting: ${settingUrl}`);
         
@@ -48,4 +47,4 @@ export default class {
             console.log(`Viewer::saveSetting failed: ${error}`)
         }
     }
-}
+
