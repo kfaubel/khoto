@@ -38,7 +38,7 @@ class Viewer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            baseUrl: `${config.httpsProxy}http://${this.props.site}/api/user/${this.props.name}`,
+            baseUrl: `${config.proto}://${this.props.site}/api/user/${this.props.name}`,
             password: this.props.password,
             activeUrl: "",
             albumList: [""],

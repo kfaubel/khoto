@@ -3,7 +3,7 @@ import config from "./config.json";
 
     // /api/user/:user/setting/key/:key
     export async function loadSetting(host, user, key) {
-        let settingUrl = `${config.httpsProxy}http://${host}/api/user/${user}/setting/key/${key}`;
+        let settingUrl = `${config.proto}://${host}/api/user/${user}/setting/key/${key}`;
         //console.log(`loadSetting: ${settingUrl}`);
 
         let settingValue = "";
@@ -32,7 +32,7 @@ import config from "./config.json";
 
     // /api/user/:user/setting/key/:key/value/:value
     export async function saveSetting(host, user, key, value) {
-        let settingUrl = `${config.httpsProxy}http://${host}/api/user/${user}/setting/key/${key}/value/${value}`;
+        let settingUrl = `${config.proto}://${host}/api/user/${user}/setting/key/${key}/value/${value}`;
         //console.log(`saveSetting: ${settingUrl}`);
         
         // Fire and don't wait

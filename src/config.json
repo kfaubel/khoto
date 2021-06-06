@@ -2,7 +2,7 @@
     "defaultSite": "",
     "defaultName": "",
     "defaultPassword": "",
-    "httpsProxy": "",
-    "httpProxyXX": "https://cors-anywhere.herokuapp.com/",
+    "proto": "https",
+    "protoX": "http",
     "publicUrlPrefix": ""
 }
