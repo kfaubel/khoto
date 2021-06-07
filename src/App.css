@@ -3,6 +3,11 @@
   background: #111;
 }
 
+
+body {
+    background: rgb(94, 174, 253);
+}
+
 .Login {
   background-color:#93C9FF;
 }

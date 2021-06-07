@@ -30,7 +30,7 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
 
           #### KTF
-          # This is run automatically: 
+          # This is run automatically to do "npm run build"
           app_build_command: 
 
           app_location: "/" # App source code path
