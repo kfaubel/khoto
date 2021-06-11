@@ -42,7 +42,7 @@ class Viewer extends React.Component {
             password: this.props.password,
             activeUrl: "",
             albumList: [""],
-            activeAlbum: "",
+            activeAlbum: "Loading...",
             activeImageIndex: 0,
             imageListLength: 0,
             imageType: "",
