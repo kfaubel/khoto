@@ -27,7 +27,7 @@ class App extends React.Component {
     }
 
     updateCredentials = (site, name, password) => {
-        console.log(`App::updateCredentials: site = ${site}, name = ${name}, password = ${password}`);
+        //console.log(`App::updateCredentials: site = ${site}, name = ${name}, password = ${password}`);
         this.setState({ site: site, name: name, password: password, toViewer: true });
         this.props.history.push(this.state.publicUrlPrefix + '/viewer');
     }

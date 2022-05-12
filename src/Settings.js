@@ -1,10 +1,16 @@
 import axios from 'axios';
 import config from "./config.json";
 
-    // /api/user/:user/setting/key/:key
-    export async function loadSetting(host, user, key) {
-        let settingUrl = `${config.proto}://${host}/api/user/${user}/setting/key/${key}`;
-        //console.log(`loadSetting: ${settingUrl}`);
+    // GET /api/settings/<key>/<setting>
+    /**
+     * 
+     * @param {*} host khotoserver hostname
+     * @param {*} key secret
+     * @param {*} setting Settings value to revtrieve
+     * @returns The saved setting or ""
+     */
+    export async function loadSetting(host, key, setting) {
+        let settingUrl = `${config.proto}://${host}/api/settings/${key}/${setting}`;
 
         let settingValue = "";
 
@@ -12,39 +18,37 @@ import config from "./config.json";
             let settingResult = await axios({
                 method: 'get',
                 url: settingUrl,
-                responseType: 'text',
-                headers: { 'Access-Control-Allow-Origin': '*' }
+                responseType: 'text'
             })
             settingValue = settingResult.data;
         } catch (error) {
-            console.log(`loadSetting caught for ${key}`)
+            console.error(`loadSetting caught for ${setting}`)
             settingValue = "";
         }
 
-        if (typeof settingValue === undefined || settingValue === "undefined") {
-            console.log(`Settings::loadSetting query for user: ${user} and key: ${key} is undefined, setting to ""`);
+        if (typeof settingValue === "undefined" || settingValue === "") {
+            console.log(`Settings::loadSetting query for key: ${key} and setting: ${setting} is undefined, setting to ""`);
             settingValue = "";
         }
 
-        console.log(`Settings::loadSetting result for ${key}: ${settingValue}`);
+        console.log(`Settings::loadSetting result for ${setting}: ${settingValue}`);
         return settingValue;
     }
 
-    // /api/user/:user/setting/key/:key/value/:value
-    export async function saveSetting(host, user, key, value) {
-        let settingUrl = `${config.proto}://${host}/api/user/${user}/setting/key/${key}/value/${value}`;
-        //console.log(`saveSetting: ${settingUrl}`);
+    // PUT /api/settings/<key>/<setting>/<value>
+    export async function saveSetting(host, key, setting, value) {
+        let settingUrl = `${config.proto}://${host}/api/settings/${key}/${setting}/${value}`;
         
         // Fire and don't wait
         try {
             axios({
-                method: 'post',
+                method: 'put',
                 url: settingUrl,
-                responseType: 'json',
-                headers: { 'Access-Control-Allow-Origin': '*' }
+                responseType: 'json'
             })
+            console.log(`Settings::saveSetting ${setting}: ${value} success`);
         } catch (error) {
-            console.log(`Viewer::saveSetting failed: ${error}`)
+            console.log(`Settings::saveSetting ${setting}: ${value} failed: ${error}`)
         }
     }
 

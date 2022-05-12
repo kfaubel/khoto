@@ -33,18 +33,18 @@ class MyCanvas extends React.Component {
             if (this.image === null) {
                 //console.log("Redraw existing image... but null, so skipping");
             } else {
-                console.log("Canvas::componnentDidUpdate - Redraw existing image");
+                //console.log("Canvas::componnentDidUpdate - Redraw existing image");
                 this.showImage(this.image);
             }
         } else {
             // Do a full retreive and render
-            console.log(`Canvas::componentDidUpdatem- Full fetch and render`);
+            console.log(`Canvas::componentDidUpdatem- Full fetch and render: ${this.props.url}`);
             this.setImage(this.props.url);
         }
     }
 
     componentDidMount() {
-        console.log(`Canvas::componentDidMount: ${this.props.url}`);
+        //console.log(`Canvas::componentDidMount: ${this.props.url}`);
         
         if (this.props.url !== null && this.props.url !== "") {
             this.setImage(this.props.url);

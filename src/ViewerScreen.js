@@ -38,7 +38,8 @@ class Viewer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            baseUrl: `${config.proto}://${this.props.site}/api/user/${this.props.name}`,
+            baseUrl: `${config.proto}://${this.props.site}/api`,
+            name: this.props.name,
             password: this.props.password,
             activeUrl: "",
             albumList: [""],
@@ -49,7 +50,6 @@ class Viewer extends React.Component {
             imagePassword: this.props.password
         };
 
-        //console.log(`Viewer::Viewer - name=${this.props.name} password=${this.state.password}`);
         if (this.props.name === "") {
             console.warn(`No name.  Pushing to login`);
             this.setState({ activeUrl: null });
@@ -72,7 +72,9 @@ class Viewer extends React.Component {
             let newAlbumList = await this.loadAlbumList();
 
             let newActiveAlbum = await loadSetting(this.props.site, this.props.name, "lastAlbum");
-            if (newActiveAlbum === "") {
+
+            // If there was no saved lastAlbum, or if the previous value is not in the album list, use the first album
+            if (newActiveAlbum === "" || !newAlbumList.includes(newActiveAlbum)) {
                 newActiveAlbum = newAlbumList[0];
                 saveSetting(this.props.site, this.props.name, "lastAlbum", newActiveAlbum);
             }
@@ -86,7 +88,7 @@ class Viewer extends React.Component {
 
             this.bookmarkIndex = newActiveImageIndex;
 
-            // console.log(`Viewer::componentDidMount album=${newActiveAlbum} Index= ${newActiveImageIndex} - assigning new Image Url`);
+            console.log(`Viewer::componentDidMount album=${newActiveAlbum} Index= ${newActiveImageIndex} - assigning new Image Url`);
             this.assignNewImageUrl(newActiveAlbum, newActiveImageIndex);
 
             let newState = {
@@ -107,7 +109,7 @@ class Viewer extends React.Component {
             this.props.exitViewer("No access");
         };
 
-        document.addEventListener('keydown', this.handleKey);
+        document.addEventListener('namedown', this.handleName);
         document.addEventListener('wheel', this.handleWheel);
         document.addEventListener('mousemove', this.showControls);
         document.addEventListener('mousedown', this.handleClick);
@@ -119,7 +121,7 @@ class Viewer extends React.Component {
     }
 
     componentWillUnmount() {
-        document.removeEventListener('keydown', this.handleKey);
+        document.removeEventListener('namedown', this.handleName);
         document.removeEventListener('wheel', this.handleWheel);
         document.removeEventListener('mousemove', this.showControls);
         document.removeEventListener('mousedown', this.handleClick);
@@ -137,7 +139,7 @@ class Viewer extends React.Component {
 
     handleAlbumChange = async (event) => {
         let newActiveAlbum = event.target.value;
-        console.log(`New Album selected:`, newActiveAlbum);
+        //console.log(`New Album selected:`, newActiveAlbum);
 
         saveSetting(this.props.site, this.props.name, "lastAlbum", newActiveAlbum);
 
@@ -161,9 +163,16 @@ class Viewer extends React.Component {
     // Computes the image URL for the canvas to use and update all of the related state.
     assignNewImageUrl = (album, index) => {
         //console.log(`Viewer::assignNewImageUrl: user=${this.props.name} album=${album} index=${index} image=${this.imageList[index]}`)
+        if (!Number.isInteger(index)) {
+            console.log(`ViewerScreen::assignNewImageURL: Correcting index from ${index} to 0`);
+            index = 0;
+        }
+
         saveSetting(this.props.site, this.props.name, "lastIndex", index);
 
-        var imageUrl = `${this.state.baseUrl}/base64Image/albumName/${album}/imageName/${this.imageList[index]}`;
+        //var imageUrl = `${this.state.baseUrl}/base64Image/albumName/${album}/imageName/${this.imageList[index]}`;
+        var imageUrl = `${this.state.baseUrl}/image/${this.state.name}/${album}/${this.imageList[index]}`;
+        console.log(`ViewerScreen::assignNewImageUrl: ${imageUrl}`);
 
         let newType = "";
         let newImagePassword = this.state.password;
@@ -205,42 +214,46 @@ class Viewer extends React.Component {
 
     // Synchronous retreival of the album list
     loadAlbumList = async () => {
-        let albumListUrl = this.state.baseUrl + "/albums";
-        //console.log("Viewer loadAlbumList albumUrl: " + albumListUrl);
+        let albumListUrl = `${this.state.baseUrl}/albums/${this.state.name}`;
+        console.log("Viewer loadAlbumList albumUrl: " + albumListUrl);
 
         // Load the list of albums
-        let albumResult = await axios({
-            method: 'get',
-            url: albumListUrl,
-            responseType: 'json',
-            headers: { 'Access-Control-Allow-Origin': '*' }
-        })
-
-        return albumResult.data;
+        let list = [];
+        try {
+            let albumResult = await axios({
+                method: 'get',
+                url: albumListUrl,
+                responseType: 'json'
+            })
+            list = albumResult.data;
+        } catch (error) {
+            console.error(`Viewer::loadAlbumList failed: ${error}`);
+        }
+        return list;
     }
 
     // Syncrhonous retrevial of the image list
     loadImageList = async (albumName) => {
-        var albumUrl = this.state.baseUrl + "/album/albumName/" + albumName;
-        //console.log("Viewer loadImageList albumUrl: " + albumUrl);
+        //var albumUrl = this.state.baseUrl + "/album/albumName/" + albumName;
+        var albumUrl = `${this.state.baseUrl}/album/${this.state.name}/${albumName}`;
+        console.log("Viewer loadImageList albumUrl: " + albumUrl);
 
         let list = [];
         try {
             let listResult = await axios({
                 method: 'get',
                 url: albumUrl,
-                responseType: 'json',
-                headers: { 'Access-Control-Allow-Origin': '*' }
+                responseType: 'json'
             });
             list = listResult.data;
         } catch (error) {
-            //console.log(`Viewer::loadImageList failed: ${error}`)
+            console.error(`Viewer::loadImageList failed: ${error}`);
         }
 
         return list;
     }
 
-    // Called when a user actions (click, key or wheel) say to go to the next image
+    // Called when a user actions (click, name or wheel) say to go to the next image
     handleNext = () => {
         //console.log("App: onNext, index: " + this.state.activeImageIndex);
 
@@ -253,7 +266,7 @@ class Viewer extends React.Component {
         }
     }
 
-    // Called when a user actions (click, key or wheel) say to go to the previous image
+    // Called when a user actions (click, name or wheel) say to go to the previous image
     handlePrev = () => {
         //console.log("App: onPrev, index: " + this.state.activeImageIndex);
 
@@ -265,12 +278,12 @@ class Viewer extends React.Component {
         }
     }
 
-    // Handle an event from the keyboard.  
+    // Handle an event from the nameboard.  
     // Right arrow and space advance
     // Left arrow rewinds
     // ESC exits full screen.
-    handleKey = (event) => {
-        var x = event.which || event.keyCode;
+    handleName = (event) => {
+        var x = event.which || event.nameCode;
 
         // space: 32       Enter: 13     Esc:   27
         // Up:    38       Down:  40
@@ -375,12 +388,15 @@ class Viewer extends React.Component {
         } else {
             // sliding vertically
             if (diffY > 0) {
-                // swiped up
                 console.log("swiped up");
-                this.props.exitViewer("Logout");
+                this.handleNext();
+                // swiped up
+                //console.log("swiped up");
+                //this.props.exitViewer("Logout");
             } else {
                 // swiped down
                 console.log("swiped down");
+                this.handlePrev();
             }
         }
     
@@ -416,7 +432,7 @@ class Viewer extends React.Component {
 
             this.timeout = setTimeout(() => {
                 this.hideControls();
-            }, 2000);
+            }, 4000);
         } catch (e) { }
     }
 
@@ -479,12 +495,12 @@ class Viewer extends React.Component {
         }
     }
 
-    // The tabIndex="0" is needed to get onKeyDown to work
-    //onKeyDown={this.onKey}
+    // The tabIndex="0" is needed to get onnameDown to work
+    //onnameDown={this.onname}
     //            onMouseMove={this.onShow}
     //            tabIndex="0"
     render() {
-        // console.log("Viewer::render");
+        //console.log(`Viewer::render: activeUrl: ${this.state.activeUrl}`);
         return (
             <div id="myViewer" className="Viewer">
                 <AlbumSelect
