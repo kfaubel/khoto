@@ -8,7 +8,7 @@
     "url": "git+https://github.com/kfaubel/khoto.git"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "bootstrap": "^5.0.1",
     "core-js": "^3.13.1",
     "react": "^17.0.2",
