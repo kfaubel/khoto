@@ -10,6 +10,11 @@ import config from "./config.json";
      * @returns The saved setting or ""
      */
     export async function loadSetting(host, key, setting) {
+        if (host === "") {
+            console.warn(`Settings::loadSetting - No host specified, skipping`);
+            return "";
+        }
+
         let settingUrl = `${config.proto}://${host}/api/settings/${key}/${setting}`;
 
         let settingValue = "";
@@ -37,6 +42,11 @@ import config from "./config.json";
 
     // PUT /api/settings/<key>/<setting>/<value>
     export async function saveSetting(host, key, setting, value) {
+        if (host === "") {
+            console.warn(`Settings::saveSetting - No host specified, skipping`);
+            return;
+        }
+        
         let settingUrl = `${config.proto}://${host}/api/settings/${key}/${setting}/${value}`;
         
         // Fire and don't wait

@@ -57,15 +57,26 @@ class Viewer extends React.Component {
         }
         this.imageList = [];
         this.timeout = null;
+        this.pinger = null;
 
         this.touchStartX = null;
         this.touchStartY = null;
+    }
+
+    async ping() {
+        const result = await loadSetting(this.props.site, this.props.name, "lastAlbum");
+        console.log(`Pinger: got ${result}`);
     }
 
     async componentDidMount() {
         this.timeout = setTimeout(() => {
             this.hideControls();
         }, 3000);
+
+        // Get some value every minute to keep the function alive
+        this.pinger = setInterval(async () => {
+            this.ping();
+        }, 60000);
 
         // Load the list of albums
         try {
@@ -76,6 +87,7 @@ class Viewer extends React.Component {
             // If there was no saved lastAlbum, or if the previous value is not in the album list, use the first album
             if (newActiveAlbum === "" || !newAlbumList.includes(newActiveAlbum)) {
                 newActiveAlbum = newAlbumList[0];
+                console.log(`Viewer::componentDidMount - no previous album, setting ${newActiveAlbum}`);
                 saveSetting(this.props.site, this.props.name, "lastAlbum", newActiveAlbum);
             }
             this.imageList = await this.loadImageList(newActiveAlbum);
@@ -139,7 +151,7 @@ class Viewer extends React.Component {
 
     handleAlbumChange = async (event) => {
         let newActiveAlbum = event.target.value;
-        //console.log(`New Album selected:`, newActiveAlbum);
+        console.log(`Viewer::handleAlbumChange New Album selected:`, newActiveAlbum);
 
         saveSetting(this.props.site, this.props.name, "lastAlbum", newActiveAlbum);
 
@@ -168,6 +180,7 @@ class Viewer extends React.Component {
             index = 0;
         }
 
+        console.log(`viewer::assignNewImageUrl Saving new index: ${index}`);
         saveSetting(this.props.site, this.props.name, "lastIndex", index);
 
         //var imageUrl = `${this.state.baseUrl}/base64Image/albumName/${album}/imageName/${this.imageList[index]}`;
