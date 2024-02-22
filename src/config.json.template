@@ -1,0 +1,8 @@
+{
+    "defaultSite": "backend-server-hostname", 
+    "defaultName": "test",
+    "defaultPassword": "0000",
+    "proto": "http",
+    "protoX": "https",
+    "publicUrlPrefix": ""
+}

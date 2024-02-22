@@ -15,36 +15,45 @@ This page provides a viewer for photos stored on a server someplace.  The site o
 Imagine that this viewer were posted to github pages and the image server sat on a private 
 server behind a home firewall someplace.
 
-It's mostly a sandbox to sort out React and hot to build a full screen app.
+It's mostly a sandbox to sort out React and hot to build a full screen app.  
+## Design
+
+### Components
+* App
+  * LoginScreen
+  * ViewerScreen
+    * Canvas
+    * NextButton
+    * PrevButton
+    * AlbumSelect
+    * Slider
+    * ToggleButton
+
+### Helpers
+* credentials is an object with: user, site, password
+* settings
+  * loadSettings(credentials, key, setting) 
+  * saveSettings(credentials, key, setting, value) 
+* album 
+  * loadAlbumList(credentials)
+  * loadImageList(credentials, albumName)
+  * loadImage(credentials, imageIndex)
+  * Album
+    * Image
+  * Settings
+  * About
+## Deployment
+Publish updated version to github and a github action pushes this to azure.  See: https://github.com/kfaubel/khoto/actions
 
 ## Image server
 The image server needs to support the following REST endpoint
 ```
-    // GET a list of albums, 
-    // 'user' is provided and can optionally be validated
-    // Result is a JSON array of names of albums
-    app.route('/api/user/:user/albums')
-        .get(setsController.getAlbums);
+// Routes  
+    app.route('/api/v1/albums/user/:user')
+    app.route('/api/v1/album/user/:user/albumName/:albumName')  
+    app.route('/api/v1/base64Image/user/:user/albumName/:albumName/imageName/:imageName')
 
-    // GET a list of images within an album, 
-    // 'user' is provided and can optionally be validated
-    // Result is a JSON array of names of images in the specified album
-    app.route('/api/user/:user/album/albumName/:albumName')
-        .get(setsController.getAlbum);
-  
-    // GET a base64 encoded image based on the specified album and imageName, 
-    // 'user' is provided and can optionally be validated
-    app.route('/api/user/:user/base64Image/albumName/:albumName/imageName/:imageName')
-        .get(setsController.getBase64Image);
-
-    // Gets a value for the 'user' and 'key'
-    // Result is a simple string (not JSON) with the value 
-    // E.g.: GET /api/marty-mcfly/setting/lastAlbum    might return 'future-pics'
-    app.route('/api/user/:user/setting/key/:key')
-        .get(settingsController.getSetting);
-
-    // POST (should be PUT) a new vlaue for user/key/value
-    // E.g.: POST /api/marty-mcfly/setting/lastIndex/value/17   Stores '17' for later retreival
-    app.route('/api/user/:user/setting/key/:key/value/:value')    
-        .post(settingsController.postSetting)
+    app.route('/api/v1/setting/user/:user/key/:key')
+    app.route('/api/v1/setting/user/:user/key/:key/value/:value')  
+    
 ```
